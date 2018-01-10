@@ -1,12 +1,30 @@
 <?php
-require_once("const.php");
-
 class Example {
-    public $example;
-    public function __construct() {
-        // $this->cat1 = $this->fetchItems("select * from t_category where category_type = 0");
-        // $this->cat2 = $this->fetchItems("select * from t_category where category_type = 1");
-        $this->example = $this->fetchItems("select * from v_example_desc;");
+    private $language;
+    private $example;
+    private $group_cd;
+    private $group_name;
+
+    public function __construct(array $source) {
+        $this->language = $source['language'];
+        $this->example = $source['example'];
+        $this->group_cd = $source['group_cd'];
+        $this->group_name = $source['group_name'];
+    }
+
+    public function __get($name)
+    {
+        return $this->$name;
+    }
+
+    public function toArray()
+    {
+        return [
+            'language' => $this->language,
+            'example' => $this->example,
+            'group_cd' => $this->group_cd,
+            'group_name' => $this->group_name,
+        ];
     }
 
     private function getConnection() {
@@ -47,8 +65,5 @@ class Example {
             echo $e->getMessage();
             exit;
         }
-    }
-    private function toArray() {
-        
     }
 }
