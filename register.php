@@ -25,18 +25,29 @@
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
     $examples = '';
-
-    /* var_dump($_POST);*/
+    /* echo "<pre>";
+     * var_dump($_POST);
+     * echo "</pre>";*/
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : '';
       if(isset($_GET['group_cd'])) {
+        foreach ($_POST['items'] as $row) {
+          if ($row['insert_flag'] == "true") {
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $stmt = $db->prepare("INSERT INTO t_example (\"language\", \"example\", \"group_cd\") VALUES
+(:language, :example, :group_cd)");
+            $stmt->bindParam(':language',$row['example']['language']);
+            $stmt->bindParam(':example', $row['example']['example']);
+            $stmt->bindParam(':group_cd',intval($row['example']['group_cd']));
+            $stmt->execute();
+          }
+        }
         $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
           ->fetchALL(PDO::FETCH_ASSOC);
         $examples = array_map(function ($record) {
           return new Example($record);
         }, $example_records);
 
-        echo "2";
       }
       /* foreach ($_POST['items'] as $i) {
        *   if (!is_array($i) || array_values($i) === ['']) {
@@ -52,75 +63,69 @@
         $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
           ->fetchALL(PDO::FETCH_ASSOC);
         $examples = array_map(function ($record) {
-          /* var_dump($record);
-           * echo "<br>";*/
-          /* return [
-           *   'example' => new Example($record),
-           *   'insert_flag' => false,
-           * ];*/
           return new Example($record);
         }, $example_records);
-        echo "1";
       }
     }
     /* var_dump($examples);*/
     $json = json_encode(['items' =>
-      array_map(function($i) {
+      array_map(function($i, $idx) {
         return [
           'example' => $i->toArray(),
             'insert_flag' => false,
             'update_flag' => false,
-
+            'row_num' => $idx,
         ];
-      }, $examples),
+      }, $examples, range(1, count($examples))),
     ]);
     $languages = $db->query("select * from t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
     $languages_json = json_encode($languages);
 
-    /* var_dump($json);*/
+    var_dump($json);
     /* var_dump($languages_json)*/
     ?>
     <body>
       <?php echo $twig->load('navbar.html.twig')->render(); ?>
       <script id="json-vue" data-json="<?= h($json) ?>"></script>
       <script id="languages-vue" data-json="<?= h($languages_json) ?>"></script>
-      <form name="save-form" action="register.php" method="post">
+      <script id="group-cd-vue" data-json="<?= h("{\"example\": { \"group_cd\": ${group_cd}}}") ?>"></script>
+      <style>[v-cloak] { display: none; }</style>
+      <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
         <section id="app">
           <table>
             <tr v-for="(item, index) in items">
               <td>
-                <!-- <input :name="'items[' + index + '][example_id]'" :value="item.language"/> -->
-                <!-- <select id="" :name="'items[' + index + '][example_id]'">
-                     <option value="item.language">{{ item.language }} </option>
-                     </select> -->
                 <span v-if="item.insert_flag">
-                  <select name="'items[' + index + '][example][language]'">
-                    <option v-for="language in item.languages" :value="language">
+                  <select :name="'items[' + index + '][example][language]'" v-model="item.example.language">
+                    <option v-for="language in item.languages">
                       {{ language.language }}
                     </option>
                   </select>
                 </span>
                 <span v-else>
                   {{ item.example.language }}
+                  <input :name="'items[' + index + '][example][language]'" type="hidden" v-model="item.example.language"/>
                 </span>
               </td>
               <td>
-                <!-- <textarea :name="'items[' + index + '][example][example]'" rows="10" cols="60">{{ item.example.example }}</textarea> -->
-                <autosize-textarea :key="'items[' + index + '][example][example]'"  :value="item.example.example">
+                <autosize-textarea :name="'items[' + index + '][example][example]'" v-model="item.example.example">
                   {{ item.example.example }}
                 </autosize-textarea>
               </td>
-              <td>{{ item.insert_flag }}</td>
+              <td><input :name="'items[' + index + '][example][group_cd]'" type="hidden" v-model="item.example.group_cd"/>{{ item.example.group_cd }}</td>
+              <td><input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>{{ item.insert_flag }}</td>
+              <td> {{ item.row_num }} </td>
             </tr>
           </table>
-          <button type="button" v-on:click="add">追加</button>
-          <button type="submit">保存</button>
+          <button class="btn" type="button" v-on:click="add">追加</button>
+          <button class="btn" type="submit">保存</button>
         </section>
       </form>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.16/autosize.min.js"></script>
       <script>
        const json = JSON.parse(document.getElementById('json-vue').dataset.json);
        const languages = JSON.parse(document.getElementById('languages-vue').dataset.json);
+       const group_cd = JSON.parse(document.getElementById('group-cd-vue').dataset.json);
        const AutosizeTextarea = {
          props: [ 'value' ],
          template: '<textarea rows="3" cols="60">{{ value }}</textarea>',
@@ -141,16 +146,17 @@
          data: Object.assign({}, json, {
            'insert_flag': false,
            'update_flag': false,
-           'languages': ''
+           'languages': '',
          }),
          methods: {
            add: function (event) {
-             v.$data.items.push({
-               'example': '',
+             v.$data.items.push(
+               Object.assign({}, group_cd, {
                'insert_flag': true,
                'update_flag': false,
-               'languages': languages
-             });
+               'languages': languages,
+               'row_num': v.$data.items.length + 1,
+             }));
              return false;
            }
          }
