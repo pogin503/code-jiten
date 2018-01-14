@@ -28,6 +28,7 @@
     /* echo "<pre>";
      * var_dump($_POST);
      * echo "</pre>";*/
+    $disp_group = '';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : '';
       if(isset($_GET['group_cd'])) {
@@ -48,6 +49,8 @@
           return new Example($record);
         }, $example_records);
 
+        $_POST = array();
+        echo "2";
       }
       /* foreach ($_POST['items'] as $i) {
        *   if (!is_array($i) || array_values($i) === ['']) {
@@ -59,22 +62,29 @@
       $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : '';
 
       if(isset($_GET['group_cd'])) {
-        $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
         $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
           ->fetchALL(PDO::FETCH_ASSOC);
         $examples = array_map(function ($record) {
           return new Example($record);
         }, $example_records);
+      } else {
+        $disp_group_record = $db->query("select group_cd, group_name
+from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
+        $disp_group = json_encode(['items' => $disp_group_record]);
+        /* $disp_group = json_encode($disp_group_record);*/
       }
+
+      echo 1;
     }
     /* var_dump($examples);*/
     $json = json_encode(['items' =>
       array_map(function($i, $idx) {
         return [
           'example' => $i->toArray(),
-            'insert_flag' => false,
-            'update_flag' => false,
-            'row_num' => $idx,
+          'insert_flag' => false,
+          'update_flag' => false,
+          'delete_flag' => false,
+          'row_num' => $idx,
         ];
       }, $examples, range(1, count($examples))),
     ]);
@@ -88,10 +98,19 @@
       <?php echo $twig->load('navbar.html.twig')->render(); ?>
       <script id="json-vue" data-json="<?= h($json) ?>"></script>
       <script id="languages-vue" data-json="<?= h($languages_json) ?>"></script>
-      <script id="group-cd-vue" data-json="<?= h("{\"example\": { \"group_cd\": ${group_cd}}}") ?>"></script>
+      <script id="group-cd-vue" data-json="<?= ($group_cd == '') ? '' : h("{\"example\": { \"group_cd\": ${group_cd}}}") ?>"></script>
+      <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
       <style>[v-cloak] { display: none; }</style>
+
+      <section id="disp-group">
+        <table>
+          <tr v-for="item in items">
+            <td><a v-bind:href="'register?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
+          </tr>
+        </table>
+      </section>
       <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
-        <section id="app">
+        <section id="app" v-cloak>
           <table>
             <tr v-for="(item, index) in items">
               <td>
@@ -123,9 +142,28 @@
       </form>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.16/autosize.min.js"></script>
       <script>
+       function isJSON(arg) {
+         arg = (typeof arg === "function") ? arg() : arg;
+         if (typeof arg  !== "string") {
+           return false;
+         }
+         try {
+           arg = (!JSON) ? eval("(" + arg + ")") : JSON.parse(arg);
+           return true;
+         } catch (e) {
+           return false;
+         }
+       };
+       const disp_group = JSON.parse(document.getElementById('disp-group-vue').dataset.json);
+
+       var disp_group_app = new Vue({
+         el: "#disp-group",
+         data: disp_group,
+       });
+
        const json = JSON.parse(document.getElementById('json-vue').dataset.json);
        const languages = JSON.parse(document.getElementById('languages-vue').dataset.json);
-       const group_cd = JSON.parse(document.getElementById('group-cd-vue').dataset.json);
+
        const AutosizeTextarea = {
          props: [ 'value' ],
          template: '<textarea rows="3" cols="60">{{ value }}</textarea>',
@@ -138,29 +176,37 @@
          }
        };
 
-       var v = new Vue({
-         components: {
-           'autosize-textarea': AutosizeTextarea
-         },
-         el: '#app',
-         data: Object.assign({}, json, {
-           'insert_flag': false,
-           'update_flag': false,
-           'languages': '',
-         }),
-         methods: {
-           add: function (event) {
-             v.$data.items.push(
-               Object.assign({}, group_cd, {
-               'insert_flag': true,
-               'update_flag': false,
-               'languages': languages,
-               'row_num': v.$data.items.length + 1,
-             }));
-             return false;
+       if (isJSON(document.getElementById('group-cd-vue').dataset.json)) {
+         const group_cd = JSON.parse(document.getElementById('group-cd-vue').dataset.json);
+         var v = new Vue({
+           components: {
+             'autosize-textarea': AutosizeTextarea
+           },
+           el: '#app',
+           data: json,
+           methods: {
+             add: function (event) {
+               v.$data.items.push(
+                 Object.assign({}, group_cd, {
+                   insert_flag: true,
+                   update_flag: false,
+                   delete_flag: false,
+                   languages: languages,
+                   row_num: v.$data.items.length + 1,
+                 }));
+               return false;
+             },
+             remove: function(event) {
+               this.$data.items.push(
+                 Object.assign({}, group_cd, {
+                   delete_flag: true,
+                 })
+               );
+             }
            }
-         }
-       });
+         });
+       }
+
       </script>
     </body>
 </html>
