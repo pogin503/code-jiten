@@ -25,12 +25,14 @@
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
     $examples = '';
-    /* echo "<pre>";
-     * var_dump($_POST);
-     * echo "</pre>";*/
     $disp_group = '';
+    $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;
+    $group_name = null;
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : '';
+      /* echo "<pre>";
+       * var_dump($_POST);
+       * echo "</pre>";*/
       if(isset($_GET['group_cd'])) {
         foreach ($_POST['items'] as $row) {
           if ($row['insert_flag'] == "true") {
@@ -39,7 +41,7 @@
 (:language, :example, :group_cd)");
             $stmt->bindParam(':language',$row['example']['language']);
             $stmt->bindParam(':example', $row['example']['example']);
-            $stmt->bindParam(':group_cd',intval($row['example']['group_cd']));
+            $stmt->bindParam(':group_cd',intval($row['group_cd']));
             $stmt->execute();
           }
         }
@@ -59,15 +61,19 @@
        *   $items[] = new Item($i);
        * }*/
     } else {
-      $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : '';
 
-      if(isset($_GET['group_cd'])) {
+      if(isset($group_cd)) {
+        $group_record = $db->query("select group_name from t_example_group where group_cd = ${group_cd}")->fetchAll(PDO::FETCH_ASSOC);
+        var_dump($group_record);var_dump($group_record[0]['group_name']);
+        $group_name = $group_record[0]['group_name'];
+
         $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
           ->fetchALL(PDO::FETCH_ASSOC);
         $examples = array_map(function ($record) {
           return new Example($record);
         }, $example_records);
       } else {
+
         $disp_group_record = $db->query("select group_cd, group_name
 from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
         $disp_group = json_encode(['items' => $disp_group_record]);
@@ -77,17 +83,21 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       echo 1;
     }
     /* var_dump($examples);*/
-    $json = json_encode(['items' =>
-      array_map(function($i, $idx) {
-        return [
-          'example' => $i->toArray(),
-          'insert_flag' => false,
-          'update_flag' => false,
-          'delete_flag' => false,
-          'row_num' => $idx,
-        ];
-      }, $examples, range(1, count($examples))),
-    ]);
+    $json = '';
+    if(empty($examples)) {
+      $json = json_encode(['items' => []]);
+    } else {
+      $json = json_encode(['items' =>
+        array_map(function($i) {
+          return [
+            'example' => $i->toArray(),
+              'insert_flag' => false,
+              'update_flag' => false,
+
+          ];
+        }, $examples),
+      ]);
+    }
     $languages = $db->query("select * from t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
     $languages_json = json_encode($languages);
 
@@ -98,7 +108,7 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       <?php echo $twig->load('navbar.html.twig')->render(); ?>
       <script id="json-vue" data-json="<?= h($json) ?>"></script>
       <script id="languages-vue" data-json="<?= h($languages_json) ?>"></script>
-      <script id="group-cd-vue" data-json="<?= ($group_cd == '') ? '' : h("{\"example\": { \"group_cd\": ${group_cd}}}") ?>"></script>
+      <script id="group-vue" data-json="<?= ($group_cd == '') ? '' : h("{ \"group_cd\": ${group_cd}, \"group_name\": \"${group_name}\" }") ?>"></script>
       <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
       <style>[v-cloak] { display: none; }</style>
 
@@ -111,6 +121,7 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       </section>
       <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
         <section id="app" v-cloak>
+          <h2>{{ group_name }}</h2>
           <table>
             <tr v-for="(item, index) in items"
                 :key="item.row_num">
@@ -133,10 +144,10 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
                 </autosize-textarea>
               </td>
               <td>
-                <input :name="'items[' + index + '][example][group_cd]'" type="hidden" v-model.number="item.example.group_cd"/>
+                <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
                 <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
                 {{ item.insert_flag }}<br/>
-                {{ item.example.group_cd }}<br/>
+                {{ item.group_cd }}<br/>
                 {{ item.row_num }}<br/>
               </td>
             </tr>
@@ -166,7 +177,6 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
          data: disp_group,
        });
 
-       const json = JSON.parse(document.getElementById('json-vue').dataset.json);
        const languages = JSON.parse(document.getElementById('languages-vue').dataset.json);
 
        const AutosizeTextarea = {
@@ -181,18 +191,20 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
          }
        };
 
-       if (isJSON(document.getElementById('group-cd-vue').dataset.json)) {
-         const group_cd = JSON.parse(document.getElementById('group-cd-vue').dataset.json);
+       if (isJSON(document.getElementById('group-vue').dataset.json)) {
+         const group_set = JSON.parse(document.getElementById('group-vue').dataset.json);
+         const json = JSON.parse(document.getElementById('json-vue').dataset.json);
          var v = new Vue({
            components: {
              'autosize-textarea': AutosizeTextarea
            },
            el: '#app',
-           data: json,
+           data: Object.assign({}, group_set, json),
            methods: {
              add: function (event) {
                v.$data.items.push(
-                 Object.assign({}, group_cd, {
+                 Object.assign({}, group_set, {
+                   example: '',
                    insert_flag: true,
                    update_flag: false,
                    delete_flag: false,
