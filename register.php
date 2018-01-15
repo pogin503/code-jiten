@@ -91,7 +91,7 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
     $languages = $db->query("select * from t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
     $languages_json = json_encode($languages);
 
-    var_dump($json);
+    /* var_dump($json);*/
     /* var_dump($languages_json)*/
     ?>
     <body>
@@ -104,7 +104,7 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
 
       <section id="disp-group">
         <table>
-          <tr v-for="item in items">
+          <tr v-for="item in items" v-cloak>
             <td><a v-bind:href="'register?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
           </tr>
         </table>
@@ -112,7 +112,8 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
         <section id="app" v-cloak>
           <table>
-            <tr v-for="(item, index) in items">
+            <tr v-for="(item, index) in items"
+                :key="item.row_num">
               <td>
                 <span v-if="item.insert_flag">
                   <select :name="'items[' + index + '][example][language]'" v-model="item.example.language">
@@ -131,9 +132,13 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
                   {{ item.example.example }}
                 </autosize-textarea>
               </td>
-              <td><input :name="'items[' + index + '][example][group_cd]'" type="hidden" v-model="item.example.group_cd"/>{{ item.example.group_cd }}</td>
-              <td><input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>{{ item.insert_flag }}</td>
-              <td> {{ item.row_num }} </td>
+              <td>
+                <input :name="'items[' + index + '][example][group_cd]'" type="hidden" v-model.number="item.example.group_cd"/>
+                <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
+                {{ item.insert_flag }}<br/>
+                {{ item.example.group_cd }}<br/>
+                {{ item.row_num }}<br/>
+              </td>
             </tr>
           </table>
           <button class="btn" type="button" v-on:click="add">追加</button>
