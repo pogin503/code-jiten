@@ -45,11 +45,6 @@
             $stmt->execute();
           }
         }
-        $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
-          ->fetchALL(PDO::FETCH_ASSOC);
-        $examples = array_map(function ($record) {
-          return new Example($record);
-        }, $example_records);
 
         $_POST = array();
         echo "2";
@@ -60,44 +55,46 @@
        *   }
        *   $items[] = new Item($i);
        * }*/
-    } else {
-
-      if(isset($group_cd)) {
-        $group_record = $db->query("select group_name from t_example_group where group_cd = ${group_cd}")->fetchAll(PDO::FETCH_ASSOC);
-        var_dump($group_record);var_dump($group_record[0]['group_name']);
-        $group_name = $group_record[0]['group_name'];
-
-        $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
-          ->fetchALL(PDO::FETCH_ASSOC);
-        $examples = array_map(function ($record) {
-          return new Example($record);
-        }, $example_records);
-      } else {
-
-        $disp_group_record = $db->query("select group_cd, group_name
-from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
-        $disp_group = json_encode(['items' => $disp_group_record]);
-        /* $disp_group = json_encode($disp_group_record);*/
-      }
-
-      echo 1;
     }
-    /* var_dump($examples);*/
+
     $json = '';
-    if(empty($examples)) {
-      $json = json_encode(['items' => []]);
-    } else {
-      $json = json_encode(['items' =>
-        array_map(function($i) {
-          return [
-            'example' => $i->toArray(),
-              'insert_flag' => false,
-              'update_flag' => false,
 
-          ];
-        }, $examples),
-      ]);
+    if(isset($group_cd)) {
+      $group_record = $db->query("select group_name from t_example_group where group_cd = ${group_cd}")->fetchAll(PDO::FETCH_ASSOC);
+      /* var_dump($group_record);var_dump($group_record[0]['group_name']);*/
+      $group_name = $group_record[0]['group_name'];
+
+      $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
+        ->fetchALL(PDO::FETCH_ASSOC);
+      $examples = array_map(function ($record) {
+        return new Example($record);
+      }, $example_records);
+
+      /* var_dump($examples);*/
+      if(empty($examples)) {
+        $json = json_encode(['items' => []]);
+      } else {
+        $json = json_encode(['items' =>
+          array_map(function($i, $idx) {
+            return [
+              'example' => $i->toArray(),
+                'insert_flag' => false,
+                'update_flag' => false,
+                'row_num' => $idx
+            ];
+          }, $examples, range(1, count($examples))),
+          'group_cd' => $group_cd]);
+      }
+      echo 1;
+
+    } else {
+      $disp_group_record = $db->query("select group_cd, group_name
+from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
+      $disp_group = json_encode(['items' => $disp_group_record]);
+      /* $disp_group = json_encode($disp_group_record);*/
+      echo 3;
     }
+
     $languages = $db->query("select * from t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
     $languages_json = json_encode($languages);
 
@@ -147,7 +144,7 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
                 <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
                 <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
                 {{ item.insert_flag }}<br/>
-                {{ item.group_cd }}<br/>
+                {{ group_cd }}<br/>
                 {{ item.row_num }}<br/>
               </td>
             </tr>
