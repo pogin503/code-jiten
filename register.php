@@ -118,7 +118,7 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       </section>
       <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
         <section id="app" v-cloak>
-          <h2>{{ group_name }}</h2>
+          <h2><a href="register.php?group_cd=<?= $group_cd; ?>">{{ group_name }}</a></h2>
           <table>
             <tr v-for="(item, index) in items"
                 :key="item.row_num">
