@@ -34,27 +34,28 @@
        * var_dump($_POST);
        * echo "</pre>";*/
       if(isset($_GET['group_cd'])) {
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $insert_stmt = $db->prepare("INSERT INTO t_example (\"language\", \"example\", \"group_cd\") VALUES
+(:language, :example, :group_cd)");
         foreach ($_POST['items'] as $row) {
           if ($row['insert_flag'] == "true") {
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $stmt = $db->prepare("INSERT INTO t_example (\"language\", \"example\", \"group_cd\") VALUES
-(:language, :example, :group_cd)");
-            $stmt->bindParam(':language',$row['example']['language']);
-            $stmt->bindParam(':example', $row['example']['example']);
-            $stmt->bindParam(':group_cd',intval($row['group_cd']));
-            $stmt->execute();
+            $insert_stmt->bindParam(':language',$row['example']['language']);
+            $insert_stmt->bindParam(':example', $row['example']['example']);
+            $insert_stmt->bindParam(':group_cd',intval($row['group_cd']));
+            $insert_stmt->execute();
           }
         }
+        if (!empty($_POST['delete_target'])) {
+          $delete_stmt = $db->prepare('delete from t_example where example_id = :example_id;');
+          foreach($_POST['delete_target'] as $example_id){
+            $delete_stmt->bindParam(':example_id', intval($example_id));
+            $delete_stmt->execute();
+          }
+        }
+        echo "2<br/>";
 
         $_POST = array();
-        echo "2";
       }
-      /* foreach ($_POST['items'] as $i) {
-       *   if (!is_array($i) || array_values($i) === ['']) {
-       *     continue;
-       *   }
-       *   $items[] = new Item($i);
-       * }*/
     }
 
     $json = '';
@@ -143,12 +144,15 @@ from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
               <td>
                 <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
                 <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
+                {{ item.example.example_id }}<br/>
                 {{ item.insert_flag }}<br/>
                 {{ group_cd }}<br/>
                 {{ item.row_num }}<br/>
+                <button class="btn" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
               </td>
             </tr>
           </table>
+          <input :name="'delete_target[]'" type="hidden" v-model="delete_target"/>
           <button class="btn" type="button" v-on:click="add">追加</button>
           <button class="btn" type="submit">保存</button>
         </section>

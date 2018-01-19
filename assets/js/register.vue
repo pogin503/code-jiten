@@ -40,7 +40,7 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
             'autosize-textarea': AutosizeTextarea
         },
         el: '#app',
-        data: Object.assign({}, group_set, json),
+        data: Object.assign({ delete_target: [] }, group_set, json),
         methods: {
             add: function (event) {
                 v.$data.items.push(
@@ -48,17 +48,18 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
                         example: '',
                         insert_flag: true,
                         update_flag: false,
-                        delete_flag: false,
                         show_flag: true,
                         languages: languages,
                         row_num: v.$data.items.length + 1,
                     }));
                 return false;
             },
-            remove: function(event) {
-                this.show_flag = false;
-                this.delete_flag = true;
-                console.log(this);
+            remove: function(index, example_id) {
+                // this.show_flag = false;
+                if(confirm("Are you sure?")) {
+                    v.$data.items.splice(index, 1);
+                    v.$data.delete_target.push(example_id);
+                }
                 return false;
             }
         }
