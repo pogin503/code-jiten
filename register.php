@@ -24,10 +24,7 @@
     echo $template->render();
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
-    $examples = '';
-    $disp_group = '';
     $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;
-    $group_name = null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       /* echo "<pre>";
@@ -59,19 +56,21 @@
     }
 
     $json = '';
+    $examples = '';
+    $disp_group = '';
+    $group_name = null;
 
     if(isset($group_cd)) {
-      $group_record = $db->query("select group_name from t_example_group where group_cd = ${group_cd}")->fetchAll(PDO::FETCH_ASSOC);
-      /* var_dump($group_record);var_dump($group_record[0]['group_name']);*/
-      $group_name = $group_record[0]['group_name'];
 
-      $example_records = $db->query("select * from v_example_desc where group_cd = ${group_cd};")
+      // example data
+      $example_records = $db->query("select example_id, language, example, group_cd, group_name from v_example_desc where group_cd = ${group_cd};")
         ->fetchALL(PDO::FETCH_ASSOC);
       $examples = array_map(function ($record) {
         return new Example($record);
       }, $example_records);
 
-      /* var_dump($examples);*/
+      $group_name = $example_records[0]['group_name'];
+
       if(empty($examples)) {
         $json = json_encode(['items' => []]);
       } else {
@@ -92,7 +91,7 @@
       $disp_group_record = $db->query("select group_cd, group_name
 from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       $disp_group = json_encode(['items' => $disp_group_record]);
-      /* $disp_group = json_encode($disp_group_record);*/
+
       echo 3;
     }
 
