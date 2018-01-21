@@ -35,12 +35,21 @@
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $insert_stmt = $db->prepare("INSERT INTO t_example (\"language\", \"example\", \"group_cd\") VALUES
 (:language, :example, :group_cd)");
-        foreach ($_POST['items'] as $row) {
-          if ($row['insert_flag'] == "true") {
-            $insert_stmt->bindParam(':language',$row['example']['language']);
-            $insert_stmt->bindParam(':example', $row['example']['example']);
-            $insert_stmt->bindParam(':group_cd',intval($row['group_cd']));
-            $insert_stmt->execute();
+        $update_stmt = $db->prepare("UPDATE t_example SET language = :language, example = :example
+where example_id = :example_id;");
+        if (!empty($_POST['items'])) {
+          foreach ($_POST['items'] as $row) {
+            if ($row['insert_flag'] == "true") {
+              $insert_stmt->bindParam(':language',$row['example']['language']);
+              $insert_stmt->bindParam(':example', $row['example']['example']);
+              $insert_stmt->bindParam(':group_cd',intval($row['group_cd']));
+              $insert_stmt->execute();
+            } else {
+              $update_stmt->bindParam(':language',$row['example']['language']);
+              $update_stmt->bindParam(':example', $row['example']['example']);
+              $update_stmt->bindParam(':example_id',intval($row['example']['example_id']));
+              $update_stmt->execute();
+            }
           }
         }
         if (!empty($_POST['delete_target'])) {
