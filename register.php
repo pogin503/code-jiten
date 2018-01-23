@@ -143,8 +143,6 @@ FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
     $languages = $db->query("SELECT * FROM t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
     $languages_json = json_encode($languages);
 
-    /* var_dump($json);*/
-    /* var_dump($languages_json)*/
     ?>
     <body>
       <?php echo $twig->load('navbar.html.twig')->render(); ?>
@@ -194,10 +192,6 @@ FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
                 <input :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>
                 <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
                 <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
-                {{ item.example.example_id }}<br/>
-                {{ item.insert_flag }}<br/>
-                {{ group_cd }}<br/>
-                {{ item.row_num }}<br/>
                 <button class="btn" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
               </td>
             </tr>

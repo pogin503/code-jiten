@@ -40,15 +40,9 @@ class Example {
             // PDO::ATTR_ERRMODE
             // PDO::ERRMODE_EXCEPTION
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            // insert
-            // $db->exec("insert into users (name, score) values ('taguchi', 55);");
-            // echo "Add complete!";
+
             $stmt = $db->query($sql);
             $ret = $stmt->fetch(PDO::FETCH_ASSOC);
-            // print_r($ret1);
-            // echo $ret1['category_name'];
-            /* $st = $db->prepare("insert into t_score (user_id, score) values(?,?)");
-               $st->execute(array(6, $_POST['score'])); */
             return $ret;
 
         } catch (PDOException $e) {
