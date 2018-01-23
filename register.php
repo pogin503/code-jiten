@@ -36,7 +36,7 @@
         $insert_stmt = $db->prepare("INSERT INTO t_example (\"language\", \"example\", \"group_cd\") VALUES
 (:language, :example, :group_cd)");
         $update_stmt = $db->prepare("UPDATE t_example SET language = :language, example = :example
-where example_id = :example_id;");
+WHERE example_id = :example_id;");
         if (!empty($_POST['items'])) {
           foreach ($_POST['items'] as $row) {
             if ($row['insert_flag'] == "true") {
@@ -53,7 +53,7 @@ where example_id = :example_id;");
           }
         }
         if (!empty($_POST['delete_target'])) {
-          $delete_stmt = $db->prepare('delete from t_example where example_id = :example_id;');
+          $delete_stmt = $db->prepare('DELETE FROM t_example WHERE example_id = :example_id;');
           foreach($_POST['delete_target'] as $example_id){
             $delete_stmt->bindParam(':example_id', intval($example_id));
             $delete_stmt->execute();
@@ -84,7 +84,7 @@ where example_id = :example_id;");
 
         $group_name = $example_records[0]['group_name'];
       } else {
-        $group_name_stmt = $db->prepare("select group_name from t_example_group where group_cd = :group_cd");
+        $group_name_stmt = $db->prepare("SELECT group_name FROM t_example_group WHERE group_cd = :group_cd");
         $group_name_stmt->bindParam(':group_cd', $group_cd);
         $group_name_stmt->execute();
         $group_name_row = $group_name_stmt->fetch();
@@ -107,8 +107,8 @@ where example_id = :example_id;");
       }
 
       // group data
-      $group_stmt = $db->prepare("select group_cd, group_name, group_level, \"desc\", disp_flag from t_example_group where group_cd in
-(select group_ancestor from t_example_relation where group_descendant = :group_cd1 and group_ancestor <> :group_cd2);");
+      $group_stmt = $db->prepare("SELECT group_cd, group_name, group_level, \"desc\", disp_flag FROM t_example_group WHERE group_cd IN
+(SELCT group_ancestor FROM t_example_relation WHERE group_descendant = :group_cd1 AND group_ancestor <> :group_cd2);");
       $group_stmt->bindParam(':group_cd1', intval($group_cd));
       $group_stmt->bindParam(':group_cd2', intval($group_cd));
       $group_stmt->execute();
@@ -131,14 +131,14 @@ where example_id = :example_id;");
       echo 1;
 
     } else {
-      $disp_group_record = $db->query("select group_cd, group_name
-from t_example_group where disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
+      $disp_group_record = $db->query("SELECT group_cd, group_name
+FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       $disp_group = json_encode(['items' => $disp_group_record]);
 
       echo 3;
     }
 
-    $languages = $db->query("select * from t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
+    $languages = $db->query("SELECT * FROM t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
     $languages_json = json_encode($languages);
 
     /* var_dump($json);*/
