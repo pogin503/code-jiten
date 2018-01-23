@@ -79,7 +79,7 @@ WHERE example_id = :example_id;");
       $examples_stmt->execute();
       $example_records = $examples_stmt->fetchALL(PDO::FETCH_ASSOC);
 
-      if (!empty($exmaple_records)) {
+      if (!empty($example_records)) {
         $examples = array_map(function ($record) {
           return new Example($record);
         }, $example_records);
