@@ -74,8 +74,10 @@ WHERE example_id = :example_id;");
     if(isset($group_cd)) {
 
       // example data
-      $example_records = $db->query("select example_id, language, example, group_cd, group_name from v_example_desc where group_cd = ${group_cd};")
-        ->fetchALL(PDO::FETCH_ASSOC);
+      $examples_stmt = $db->prepare("SELECT example_id, language, example, group_cd, group_name FROM v_example_desc WHERE group_cd = :group_cd;");
+      $examples_stmt->bindParam(':group_cd', intval($group_cd));
+      $examples_stmt->execute();
+      $example_records = $examples_stmt->fetchALL(PDO::FETCH_ASSOC);
 
       if (!empty($exmaple_records)) {
         $examples = array_map(function ($record) {
