@@ -46,7 +46,7 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
             add: function (event) {
                 v.$data.items.push(
                     Object.assign({}, group_set, {
-                        example: '',
+                        example: { language: '' },
                         insert_flag: true,
                         update_flag: false,
                         show_flag: true,

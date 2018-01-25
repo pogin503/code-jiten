@@ -173,7 +173,7 @@ FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
               <td>
                 <span v-if="item.insert_flag">
                   <select :name="'items[' + index + '][example][language]'" v-model="item.example.language">
-                    <option v-for="language in item.languages">
+                    <option v-for="language in item.languages" :value="language.language">
                       {{ language.language }}
                     </option>
                   </select>
