@@ -196,7 +196,11 @@ FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
               </td>
             </tr>
           </table>
-          <input :name="'delete_target[]'" type="hidden" v-model="delete_target"/>
+          <div style="display:none;">
+            <span v-for="item in delete_target">
+               <input :name="'delete_target[]'" :key="item.example_id" type="number" v-model.number="item.example_id"/>
+            </span>
+          </div>
           <button class="btn" type="button" v-on:click="add">追加</button>
           <button class="btn" type="submit">保存</button>
         </section>
