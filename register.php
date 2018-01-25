@@ -110,7 +110,7 @@ WHERE example_id = :example_id;");
 
       // group data
       $group_stmt = $db->prepare("SELECT group_cd, group_name, group_level, \"desc\", disp_flag FROM t_example_group WHERE group_cd IN
-(SELCT group_ancestor FROM t_example_relation WHERE group_descendant = :group_cd1 AND group_ancestor <> :group_cd2);");
+(SELECT group_ancestor FROM t_example_relation WHERE group_descendant = :group_cd1 AND group_ancestor <> :group_cd2);");
       $group_stmt->bindParam(':group_cd1', intval($group_cd));
       $group_stmt->bindParam(':group_cd2', intval($group_cd));
       $group_stmt->execute();
