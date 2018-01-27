@@ -21,7 +21,7 @@
     ));
 
     $twig->addExtension(new Twig_Extension_Debug());
-    $template = $twig->load('index.html.twig');
+    $template = $twig->load('header.html.twig');
     echo $template->render();
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);

@@ -14,7 +14,7 @@ $twig = new Twig_Environment($loader, array(
     'debug' => true,
 ));
 $twig->addExtension(new Twig_Extension_Debug());
-$template = $twig->load('index.html.twig');
+$template = $twig->load('header.html.twig');
 echo $template->render();
 ?>
 </head>
