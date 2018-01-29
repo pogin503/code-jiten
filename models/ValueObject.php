@@ -18,6 +18,11 @@ abstract class ValueObject
     }
 
     public function toArray() {
-
+        $class_vars = get_object_vars($this);
+        $rtn = [];
+        foreach($class_vars as $propertyName => $value) {
+            $rtn["$propertyName"] = $value;
+        }
+        return $rtn;
     }
 }
