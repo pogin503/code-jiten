@@ -25,7 +25,7 @@ echo $template->render();
 <?php
 require_once './models/Example.php';
 require_once './src/functions.php';
-require_once './const.php';
+require_once './config/database.php';
 
 $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
 $language = $db->query("select language from t_language;")->fetchAll(PDO::FETCH_ASSOC);

@@ -12,7 +12,7 @@
     require_once './models/Example.php';
     require_once './models/ExampleGroup.php';
     require_once './src/functions.php';
-    require_once './const.php';
+    require_once './config/database.php';
 
     $loader = new Twig_Loader_Filesystem('views');
     $twig = new Twig_Environment($loader, array(
