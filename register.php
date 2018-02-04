@@ -59,7 +59,7 @@ WHERE example_id = :example_id;");
             $delete_stmt->execute();
           }
         }
-        echo "2<br/>";
+        /* echo "2<br/>";*/
 
         $_POST = array();
       }
@@ -130,14 +130,14 @@ WHERE example_id = :example_id;");
         ]);
       }
 
-      echo 1;
+      /* echo 1;*/
 
     } else {
       $disp_group_record = $db->query("SELECT group_cd, group_name
 FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       $disp_group = json_encode(['items' => $disp_group_record]);
 
-      echo 3;
+      /* echo 3;*/
     }
 
     $languages = $db->query("SELECT * FROM t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
