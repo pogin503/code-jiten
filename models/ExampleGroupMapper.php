@@ -21,6 +21,13 @@ class ExampleGroupMapper extends Eloquent {
     public function getParent(){
 
     }
+
+    public function updateGroup($group_cd, $group_name) {
+	DB::table('t_example_group')
+	    ->where('group_cd', $group_cd)
+	    ->update(['group_name' => $group_name]);
+    }
+
     public function insertGroup($group_name, $group_level,
 				$desc, $disp_flag, $parent_group_cd) {
 	DB::beginTransaction();

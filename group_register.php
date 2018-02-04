@@ -24,22 +24,18 @@
     $template = $twig->load('header.html.twig');
     echo $template->render();
 
-    $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $update_stmt = $db->prepare('UPDATE t_example_group SET group_name = :group_name where group_cd = :group_cd;');
-
+      $mapper = new ExampleGroupMapper();
       foreach($_POST['items'] as $row) {
         if ($row['insert_flag'] == 'true') {
 
         } else {
-          $update_stmt->bindParam(':group_name', $row['group_name']);
-          $update_stmt->bindParam(':group_cd', $row['group_cd']);
-          $update_stmt->execute();
+          $mapper->updateGroup($row['group_cd'], $row['group_name']);
         }
       }
     }
+
+    $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
 
     $disp_group_record = $db->query("SELECT group_cd, group_name, group_level, \"desc\", disp_flag
 FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
