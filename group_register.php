@@ -57,6 +57,13 @@ FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
     <form name="save-form" action="group_register.php" method="post">
       <section id="disp-group">
         <table>
+          <thead>
+            <tr>
+              <th v-for="key in gridColumns">
+                {{ key }}
+              </th>
+            </tr>
+          </thead>
           <tr v-for="(item, index) in items" v-cloak>
             <td>
               <input :name="'items[' + index + '][group_name]'" type="text" v-model="item.group_name"/>

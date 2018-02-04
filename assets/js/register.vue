@@ -2,7 +2,12 @@ const disp_group = JSON.parse(document.getElementById('disp-group-vue').dataset.
 
 var disp_group_app = new Vue({
     el: "#disp-group",
-    data: disp_group,
+    data: Object.assign(
+        {
+            gridColumns: ['グループ名'],
+        },
+        disp_group
+    )
 });
 
 function isJSON(arg) {
@@ -41,7 +46,15 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
             'autosize-textarea': AutosizeTextarea
         },
         el: '#app',
-        data: Object.assign({ delete_target: [] }, group_set, json, group_names),
+        data: Object.assign(
+            {
+                gridColumns: ['言語', '実行例', ''],
+                delete_target: [],
+            },
+            group_set,
+            json,
+            group_names
+        ),
         methods: {
             add: function (event) {
                 v.$data.items.push(

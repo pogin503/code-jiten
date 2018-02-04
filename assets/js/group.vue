@@ -2,7 +2,9 @@ const dispGroup = JSON.parse(document.getElementById('disp-group-vue').dataset.j
 
 const dispGroupApp = new Vue({
     el: "#disp-group",
-    data: Object.assign(dispGroup, { insert_flag: false }),
+    data: Object.assign(dispGroup, {
+        gridColumns: ['グループ名', 'desc', '表示フラグ'],
+    }),
     methods: {
         add: function(event) {
             dispGroupApp.$data.items.push({

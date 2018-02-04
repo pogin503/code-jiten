@@ -135,27 +135,36 @@ WHERE example_id = :example_id;");
     } else {
       $disp_group_record = $db->query("SELECT group_cd, group_name
 FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
-      $disp_group = json_encode(['items' => $disp_group_record]);
+      $disp_group = json_encode([
+        'items' => $disp_group_record,
+        'seen' => true
+      ]);
 
       /* echo 3;*/
     }
 
     $languages = $db->query("SELECT * FROM t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
     $languages_json = json_encode($languages);
-
     ?>
     <body>
       <?php echo $twig->load('navbar.html.twig')->render(); ?>
       <script id="json-vue" data-json="<?= h($json) ?>"></script>
       <script id="languages-vue" data-json="<?= h($languages_json) ?>"></script>
       <script id="group-vue" data-json="<?= ($group_cd == '') ? '' : h("{ \"group_cd\": ${group_cd}, \"group_name\": \"${group_name}\" }") ?>"></script>
-      <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
+      <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
       <script id="group-names-vue" data-json="<?= h($group_data_json) ?>"></script>
 
       <style>[v-cloak] { display: none; }</style>
 
       <section id="disp-group">
-        <table>
+        <table v-show="seen">
+          <thead>
+            <tr>
+              <th v-for="key in gridColumns">
+                {{ key }}
+              </th>
+            </tr>
+          </thead>
           <tr v-for="item in items" v-cloak>
             <td><a v-bind:href="'register?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
           </tr>
@@ -168,6 +177,13 @@ FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
             <span>[{{ name.group_name }}] </span>
           </span>
           <table>
+            <thead>
+              <tr>
+                <th v-for="key in gridColumns">
+                  {{ key }}
+                </th>
+              </tr>
+            </thead>
             <tr v-for="(item, index) in items"
                 :key="item.row_num">
               <td>
@@ -198,7 +214,7 @@ FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
           </table>
           <div style="display:none;">
             <span v-for="item in delete_target">
-               <input :name="'delete_target[]'" :key="item.example_id" type="number" v-model.number="item.example_id"/>
+              <input :name="'delete_target[]'" :key="item.example_id" type="number" v-model.number="item.example_id"/>
             </span>
           </div>
           <button class="btn" type="button" v-on:click="add">追加</button>
