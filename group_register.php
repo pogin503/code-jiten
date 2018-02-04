@@ -11,6 +11,7 @@
     require_once './vendor/autoload.php';
     require_once './src/functions.php';
     require_once './models/ExampleGroup.php';
+    require_once './models/ExampleGroupMapper.php';
     require_once './config/database.php';
 
     $loader = new Twig_Loader_Filesystem('views');
