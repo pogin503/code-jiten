@@ -33,6 +33,9 @@
           $mapper->updateGroup($row['group_cd'], $row['group_name']);
         }
       }
+      if (!empty($_POST['delete_target'])) {
+        $mapper->deleteGroup($_POST['delete_target']);
+      }
     }
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
@@ -84,6 +87,7 @@ FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
               </select>
             </td>
             <td>
+              <button class="btn" type="button" v-on:click="remove(index, item.group.group_cd)">削除</button>
             </td>
           </tr>
         </table>

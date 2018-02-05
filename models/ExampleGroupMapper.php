@@ -33,6 +33,11 @@ class ExampleGroupMapper extends Eloquent {
             ]);
     }
 
+    public function deleteGroup($group_cds) {
+        DB::table('t_example_group')
+            ->whereIn('group_cd', $group_cds)
+            ->delete();
+    }
     public function insertGroup($group_name, $group_level,
 				$desc, $disp_flag, $parent_group_cd) {
 	DB::beginTransaction();
