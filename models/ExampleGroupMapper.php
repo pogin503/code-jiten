@@ -22,10 +22,15 @@ class ExampleGroupMapper extends Eloquent {
 
     }
 
-    public function updateGroup($group_cd, $group_name) {
-	DB::table('t_example_group')
-	    ->where('group_cd', $group_cd)
-	    ->update(['group_name' => $group_name]);
+    public function updateGroup($group_cd, $group_name, $group_level, $desc, $disp_flag) {
+        DB::table('t_example_group')
+            ->where('group_cd', $group_cd)
+            ->update([
+                'group_name' => $group_name,
+                'group_level' => $group_level,
+                'desc' => $desc,
+                'disp_flag' => $disp_flag
+            ]);
     }
 
     public function insertGroup($group_name, $group_level,

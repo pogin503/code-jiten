@@ -3,7 +3,7 @@ const dispGroup = JSON.parse(document.getElementById('disp-group-vue').dataset.j
 const dispGroupApp = new Vue({
     el: "#disp-group",
     data: Object.assign(dispGroup, {
-        gridColumns: ['グループ名', 'desc', '表示フラグ'],
+        gridColumns: ['グループ名', '階層', 'desc', '表示フラグ'],
     }),
     methods: {
         add: function(event) {

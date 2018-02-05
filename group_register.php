@@ -55,7 +55,7 @@ FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
     <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
 
     <form name="save-form" action="group_register.php" method="post">
-      <section id="disp-group">
+      <section id="disp-group" v-cloak>
         <table>
           <thead>
             <tr>
@@ -64,11 +64,26 @@ FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
               </th>
             </tr>
           </thead>
-          <tr v-for="(item, index) in items" v-cloak>
+          <tr v-for="(item, index) in items">
             <td>
-              <input :name="'items[' + index + '][group_name]'" type="text" v-model="item.group_name"/>
-              <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
-              <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model.number="item.insert_flag"/>
+              <input :name="'items[' + index + '][group_name]'" type="text" v-model="item.group.group_name"/>
+              <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group.group_cd"/>
+              <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.group.insert_flag"/>
+            </td>
+            <td>
+              <input :name="'items[' + index + '][group_level]'" type="number" v-model.number="item.group.group_level"/>
+            </td>
+            <td>
+              <input :name="'items[' + index + '][desc]'" type="text" v-model.number="item.group.desc"/>
+            </td>
+            <td>
+              <select :name="'items[' + index + '][disp_flag]'" v-model="item.group.disp_flag">
+                <option v-for="disp_flag in [{ value: 0, label: '表示'}, { value: 1, label: '非表示'}]" :value="disp_flag.value">
+                  {{ disp_flag.label }}
+                </option>
+              </select>
+            </td>
+            <td>
             </td>
           </tr>
         </table>
