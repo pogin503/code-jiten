@@ -30,7 +30,12 @@
         if ($row['insert_flag'] == 'true') {
 
         } else {
-          $mapper->updateGroup($row['group_cd'], $row['group_name']);
+          $mapper->updateGroup(
+            $row['group_cd'],
+              $row['group_name'],
+              $row['desc'],
+              $row['disp_flag']
+          );
         }
       }
       if (!empty($_POST['delete_target'])) {
@@ -40,7 +45,7 @@
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
 
-    $disp_group_record = $db->query("SELECT group_cd, group_name, group_level, \"desc\", disp_flag
+    $disp_group_record = $db->query("SELECT group_cd, group_name, \"desc\", disp_flag
 FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
 
     $disp_group = json_encode([
