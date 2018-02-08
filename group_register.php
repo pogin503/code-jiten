@@ -86,7 +86,7 @@ FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
             </td>
             <td>
               <select :name="'items[' + index + '][disp_flag]'" v-model="item.group.disp_flag">
-                <option v-for="disp_flag in [{ value: 0, label: '表示'}, { value: 1, label: '非表示'}]" :value="disp_flag.value">
+                <option v-for="disp_flag in [{ value: 0, label: '非表示'}, { value: 1, label: '表示'}]" :value="disp_flag.value">
                   {{ disp_flag.label }}
                 </option>
               </select>
