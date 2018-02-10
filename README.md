@@ -20,18 +20,19 @@ code-jiten
 - git clone https://github.com/pogin503/code-jiten
 
 ```
-touch const.php
+nano config/database.php
 ```
 
-```const.php
+```config/database.php
 <?php
+define('DB_DRIVER', 'pgsql');
 define('DB_DATABASE', 'postgres');
 define('DB_USERNAME', 'postgres');
 define('DB_PASSWD', 'postgres');
 define('DB_HOST', 'localhost');
 define('DB_CHARSET', 'utf8');
 define('DB_PORT', '5432');
-define('PDO_DSN', "pgsql:host=" . DB_HOST . ";dbname=" . DB_DATABASE . ";port=" . DB_PORT);
+define('PDO_DSN', DB_DRIVER . ":host=" . DB_HOST . ";dbname=" . DB_DATABASE . ";port=" . DB_PORT);
 ?>
 ```
 
