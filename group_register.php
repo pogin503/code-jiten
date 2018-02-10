@@ -22,7 +22,6 @@
     $twig->addExtension(new Twig_Extension_Debug());
     $template = $twig->load('header.html.twig');
     echo $template->render();
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $mapper = new ExampleGroupMapper();
       foreach($_POST['items'] as $row) {
@@ -51,6 +50,7 @@
 
         }
       }
+
       if (!empty($_POST['delete_target'])) {
         $mapper->deleteGroup($_POST['delete_target']);
       }

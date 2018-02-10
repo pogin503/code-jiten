@@ -19,7 +19,6 @@ echo $template->render();
 ?>
 </head>
 <body
-<!-- load navbar -->
 <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
 <?php
