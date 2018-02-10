@@ -27,7 +27,7 @@ class ExampleGroupMapper extends Eloquent {
         // 	return $data;
     }
 
-    public static function fetchGroup($group_cd) {
+    public static function fetchParents($group_cd) {
         $group_stmt = DB::getPdo()->prepare("SELECT group_cd, group_name, \"desc\", disp_flag FROM t_example_group WHERE group_cd IN
 (SELECT group_ancestor FROM t_example_relation WHERE group_descendant = :group_cd1 AND group_ancestor <> :group_cd2);");
         $group_stmt->bindParam(':group_cd1', intval($group_cd));

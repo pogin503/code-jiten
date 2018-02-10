@@ -113,7 +113,7 @@ WHERE example_id = :example_id;");
       // group data
       $group_data = array_map(function($i) {
         return new ExampleGroup($i);
-      }, ExampleGroupMapper::fetchGroup($group_cd));
+      }, ExampleGroupMapper::fetchParents($group_cd));
 
       if (empty($group_data)) {
         $group_data_json = json_encode(['group_names' => []]);
