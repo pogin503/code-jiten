@@ -40,13 +40,14 @@ class ExampleGroupMapper extends Eloquent {
 
     }
 
-    public function updateGroup($group_cd, $group_name, $desc, $disp_flag) {
+    public function updateGroup($group_cd, $group_name, $desc, $disp_flag, $parent_id) {
         DB::table('t_example_group')
             ->where('group_cd', $group_cd)
             ->update([
                 'group_name' => $group_name,
                 'desc' => $desc,
-                'disp_flag' => $disp_flag
+                'disp_flag' => $disp_flag,
+                // 'parent_id' => $parent_id
             ]);
     }
 
@@ -59,22 +60,23 @@ class ExampleGroupMapper extends Eloquent {
             ->whereIn('group_cd', $group_cds)
             ->delete();
     }
-    public function insertGroup($group_name, $desc, $disp_flag, $depth, $parent_group_cd) {
-        DB::beginTransaction();
+    public function insertGroup($group_name, $desc, $disp_flag, $parent_group_cd) {
+
         $insert_stmt = DB::getPdo()->prepare('
-INSERT INTO t_example_group (group_name, "desc", disp_flag)
-VALUES (:group_name, :desc, :disp_flag) RETURNING group_cd;');
+INSERT INTO t_example_group (group_name, "desc", disp_flag, parent_id)
+VALUES (:group_name, :desc, :disp_flag, :parent_id) RETURNING group_cd;');
         $insert_stmt->execute(
             [
                 ':group_name' => $group_name,
                 ':desc' => $desc,
                 ':disp_flag' => $disp_flag,
+                ':parent_id' => $parent_group_cd,
             ]);
         $inserted_group_cd = $insert_stmt->fetchALL(PDO::FETCH_COLUMN);
 
         $insert_stmt2 = DB::getPdo()->prepare('
 INSERT INTO t_example_relation (group_ancestor, group_descendant, depth)
-  (SELECT t.group_ancestor, cast(:group_cd1 as integer), cast(:depth as integer) + 1
+  (SELECT t.group_ancestor, cast(:group_cd1 as integer), depth + 1
   FROM t_example_relation AS t
   WHERE t.group_descendant = cast(:parent_group_cd as integer))
   UNION ALL
@@ -82,7 +84,6 @@ INSERT INTO t_example_relation (group_ancestor, group_descendant, depth)
 
         $insert_stmt2->bindValue(':group_cd1', $inserted_group_cd[0], PDO::PARAM_INT);
         $insert_stmt2->bindValue(':parent_group_cd', $parent_group_cd, PDO::PARAM_INT);
-        $insert_stmt2->bindValue(':depth', $depth, PDO::PARAM_INT);
         $insert_stmt2->bindValue(':group_cd2', $inserted_group_cd[0], PDO::PARAM_INT);
         $insert_stmt2->bindValue(':group_cd3', $inserted_group_cd[0], PDO::PARAM_INT);
         $insert_stmt2->execute();
