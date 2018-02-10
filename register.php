@@ -150,7 +150,7 @@ WHERE example_id = :example_id;");
 
       <style>[v-cloak] { display: none; }</style>
 
-      <section id="disp-group">
+      <section id="disp-group" v-cloak>
         <table v-show="seen">
           <thead>
             <tr>
@@ -159,7 +159,7 @@ WHERE example_id = :example_id;");
               </th>
             </tr>
           </thead>
-          <tr v-for="item in items" v-cloak>
+          <tr v-for="item in items">
             <td><a v-bind:href="'register?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
           </tr>
         </table>
