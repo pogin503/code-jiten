@@ -11,6 +11,8 @@
     require_once './vendor/autoload.php';
     require_once './models/Example.php';
     require_once './models/ExampleGroup.php';
+    require_once './models/ExampleGroupMapper.php';
+    require_once './models/Language.php';
     require_once './src/functions.php';
     require_once './config/database.php';
 
@@ -109,14 +111,9 @@ WHERE example_id = :example_id;");
       }
 
       // group data
-      $group_stmt = $db->prepare("SELECT group_cd, group_name, group_level, \"desc\", disp_flag FROM t_example_group WHERE group_cd IN
-(SELECT group_ancestor FROM t_example_relation WHERE group_descendant = :group_cd1 AND group_ancestor <> :group_cd2);");
-      $group_stmt->bindParam(':group_cd1', intval($group_cd));
-      $group_stmt->bindParam(':group_cd2', intval($group_cd));
-      $group_stmt->execute();
       $group_data = array_map(function($i) {
         return new ExampleGroup($i);
-      }, $group_stmt->fetchAll(PDO::FETCH_ASSOC));
+      }, ExampleGroupMapper::fetchGroup($group_cd));
 
       if (empty($group_data)) {
         $group_data_json = json_encode(['group_names' => []]);
@@ -133,18 +130,15 @@ WHERE example_id = :example_id;");
       /* echo 1;*/
 
     } else {
-      $disp_group_record = $db->query("SELECT group_cd, group_name
-FROM t_example_group WHERE disp_flag = 1;")->fetchAll(PDO::FETCH_ASSOC);
       $disp_group = json_encode([
-        'items' => $disp_group_record,
+        'items' => ExampleGroupMapper::fetchLeaf()->toArray(),
         'seen' => true
       ]);
 
       /* echo 3;*/
     }
 
-    $languages = $db->query("SELECT * FROM t_language order by language")->fetchAll(PDO::FETCH_ASSOC);
-    $languages_json = json_encode($languages);
+    $languages_json = Language::getLanguage()->toJson();
     ?>
     <body>
       <?php echo $twig->load('navbar.html.twig')->render(); ?>

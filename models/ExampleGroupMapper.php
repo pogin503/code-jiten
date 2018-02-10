@@ -7,7 +7,16 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class ExampleGroupMapper extends Eloquent {
 
+    protected $table = 't_example_group';
+
     public function __construct() {
+    }
+
+    public static function fetchLeaf() {
+        return self::query()
+            ->select('group_cd', 'group_name')
+            ->where('disp_flag', '=', 1)
+            ->get();
     }
 
     public function getChild($group_cd){
@@ -16,6 +25,15 @@ class ExampleGroupMapper extends Eloquent {
         // FROM t_example_group
         // where group_cd = :group_cd;", ['group_cd' => $group_cd]);
         // 	return $data;
+    }
+
+    public static function fetchGroup($group_cd) {
+        $group_stmt = DB::getPdo()->prepare("SELECT group_cd, group_name, \"desc\", disp_flag FROM t_example_group WHERE group_cd IN
+(SELECT group_ancestor FROM t_example_relation WHERE group_descendant = :group_cd1 AND group_ancestor <> :group_cd2);");
+        $group_stmt->bindParam(':group_cd1', intval($group_cd));
+        $group_stmt->bindParam(':group_cd2', intval($group_cd));
+        $group_stmt->execute();
+        return $group_stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getParent(){

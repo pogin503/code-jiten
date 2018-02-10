@@ -12,7 +12,6 @@
     require_once './src/functions.php';
     require_once './models/ExampleGroup.php';
     require_once './models/ExampleGroupMapper.php';
-    require_once './config/database.php';
 
     $loader = new Twig_Loader_Filesystem('views');
     $twig = new Twig_Environment($loader, array(
@@ -43,17 +42,14 @@
       }
     }
 
-    $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
-
-    $disp_group_record = $db->query("SELECT group_cd, group_name, \"desc\", disp_flag
-FROM t_example_group;")->fetchAll(PDO::FETCH_ASSOC);
+    $disp_group_record = ExampleGroupMapper::all();
 
     $disp_group = json_encode([
       'items' => array_map(function($record) {
         return $record->toArray();
       }, array_map(function($record) {
         return new ExampleGroup($record);
-      }, $disp_group_record)),
+      }, $disp_group_record->toArray())),
     ]);
     ?>
   </head>
