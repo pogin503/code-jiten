@@ -62,6 +62,9 @@ class ExampleGroupMapper extends Eloquent {
     }
     public function insertGroup($group_name, $desc, $disp_flag, $parent_group_cd) {
 
+        if ($parent_group_cd == 0) {
+            return;
+        }
         $insert_stmt = DB::getPdo()->prepare('
 INSERT INTO t_example_group (group_name, "desc", disp_flag, parent_id)
 VALUES (:group_name, :desc, :disp_flag, :parent_id) RETURNING group_cd;');
