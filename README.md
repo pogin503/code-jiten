@@ -54,3 +54,7 @@ services:
 
 # License
 MIT
+
+# Contributor
+
+- icon: [@yamahare](https://twitter.com/yamahare)
