@@ -63,10 +63,9 @@ WHERE example_id = :example_id;");
         }
         /* echo "2<br/>";*/
 
-        $_POST = array();
       }
     }
-
+    $_POST = array();
     $json = '';
     $examples = '';
     $disp_group = '';

@@ -73,12 +73,14 @@ class ExampleGroupMapper extends Eloquent {
         $insert_stmt = DB::getPdo()->prepare('
 INSERT INTO t_example_group (group_name, "desc", disp_flag, parent_id)
 VALUES (:group_name, :desc, :disp_flag, :parent_id) RETURNING group_cd;');
+
+        $parent_id = (is_null($parent_group_cd) ? 0 : $parent_group_cd);
         $insert_stmt->execute(
             [
                 ':group_name' => $group_name,
                 ':desc' => $desc,
                 ':disp_flag' => $disp_flag,
-                ':parent_id' => $parent_group_cd,
+                ':parent_id' => $parent_id,
             ]);
         $inserted_group_cd = $insert_stmt->fetchALL(PDO::FETCH_COLUMN);
 
@@ -86,12 +88,12 @@ VALUES (:group_name, :desc, :disp_flag, :parent_id) RETURNING group_cd;');
 INSERT INTO t_example_relation (group_ancestor, group_descendant, depth)
   (SELECT t.group_ancestor, cast(:group_cd1 as integer), depth + 1
   FROM t_example_relation AS t
-  WHERE t.group_descendant = cast(:parent_group_cd as integer))
+  WHERE t.group_descendant = cast(:parent_id as integer))
   UNION ALL
   (SELECT cast(:group_cd2 as integer), cast(:group_cd3 as integer), 0);');
 
         $insert_stmt2->bindValue(':group_cd1', $inserted_group_cd[0], PDO::PARAM_INT);
-        $insert_stmt2->bindValue(':parent_group_cd', $parent_group_cd, PDO::PARAM_INT);
+        $insert_stmt2->bindValue(':parent_id', $parent_id, PDO::PARAM_INT);
         $insert_stmt2->bindValue(':group_cd2', $inserted_group_cd[0], PDO::PARAM_INT);
         $insert_stmt2->bindValue(':group_cd3', $inserted_group_cd[0], PDO::PARAM_INT);
         $insert_stmt2->execute();

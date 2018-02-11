@@ -44,7 +44,7 @@
               $row['group_name'],
               $row['desc'],
               $row['disp_flag'],
-              $row['parent_id']
+              (isset($row['parent_id'])) ? 0 : $row['parent_id']
             );
           }
 
