@@ -62,6 +62,14 @@ class ExampleGroupMapper extends Eloquent {
     }
     public function insertGroup($group_name, $desc, $disp_flag, $parent_group_cd) {
 
+        $isAllowedId = function ($id) {
+            return $id >= 0;
+        };
+        if (!($disp_flag == 0 or $disp_flag == 1)
+            || !$isAllowedId($parent_group_cd)) {
+            echo '登録できませんでした。';
+            return;
+        }
         $insert_stmt = DB::getPdo()->prepare('
 INSERT INTO t_example_group (group_name, "desc", disp_flag, parent_id)
 VALUES (:group_name, :desc, :disp_flag, :parent_id) RETURNING group_cd;');
