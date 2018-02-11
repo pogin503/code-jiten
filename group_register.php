@@ -115,6 +115,11 @@
             </td>
           </tr>
         </table>
+        <div style="display:none">
+          <span v-for="item in delete_target">
+            <input :name="'delete_target[]'" :key="item.group_cd" type="number" v-model.number="item.group_cd"/>
+          </span>
+        </div>
         <div v-show="show_flag">
           <hr style="border:1px solid #000000;" ></hr>
           <table>
