@@ -15,6 +15,11 @@ const dispGroupApp = new Vue({
                             delete_target: [],
                             insert_target: [],
                             group_names: groupNames,
+                            selected: 1,
+                            options: [
+                                { label: "非表示", value: 0 },
+                                { label: "表示", value: 1 },
+                            ],
                         }
                        ),
     methods: {

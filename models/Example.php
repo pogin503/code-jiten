@@ -29,38 +29,4 @@ class Example {
             'group_name' => $this->group_name,
         ];
     }
-
-    private function getConnection() {
-        return new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
-    }
-
-    private function fetchItem($sql) {
-        try {
-            $db = getConnection();
-            // PDO::ATTR_ERRMODE
-            // PDO::ERRMODE_EXCEPTION
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            $stmt = $db->query($sql);
-            $ret = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $ret;
-
-        } catch (PDOException $e) {
-            echo "invalid<br>";
-            echo $e->getMessage();
-            exit;
-        }
-    }
-
-    private function fetchItems($sql) {
-        try {
-            $db = $this->getConnection();
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo "invalid<br>";
-            echo $e->getMessage();
-            exit;
-        }
-    }
 }

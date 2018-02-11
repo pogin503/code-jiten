@@ -134,8 +134,8 @@
                 <input :name="'insert_target[' + index + '][desc]'" type="text" v-model.number="item.desc"/>
               </td>
               <td>
-                <select :name="'insert_target[' + index + '][disp_flag]'" v-model="item.disp_flag" required>
-                  <option v-for="disp_flag in [{ value: 0, label: '非表示'}, { value: 1, label: '表示'}]" :value="disp_flag.value">
+                <select :name="'insert_target[' + index + '][disp_flag]'" v-model="selected" required>
+                  <option v-for="disp_flag in options" :value="disp_flag.value">
                     {{ disp_flag.label }}
                   </option>
                 </select>
