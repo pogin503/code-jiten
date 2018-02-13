@@ -36,7 +36,6 @@ const AutosizeTextarea = {
 };
 
 if (isJSON(document.getElementById('group-vue').dataset.json)) {
-    const languages = JSON.parse(document.getElementById('languages-vue').dataset.json);
     const group_set = JSON.parse(document.getElementById('group-vue').dataset.json);
     const group_names = JSON.parse(document.getElementById('group-names-vue').dataset.json);
     const json = JSON.parse(document.getElementById('json-vue').dataset.json);
@@ -63,7 +62,6 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
                         insert_flag: true,
                         update_flag: false,
                         show_flag: true,
-                        languages: languages,
                         row_num: v.$data.items.length + 1,
                     }));
                 return false;

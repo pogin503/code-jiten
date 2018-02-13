@@ -97,16 +97,21 @@ WHERE example_id = :example_id;");
       if(empty($examples)) {
         $json = json_encode(['items' => []]);
       } else {
-        $json = json_encode(['items' =>
-          array_map(function($i, $idx) {
+        $languages = Language::getLanguage()->toArray();
+
+        $items = array_map(function($i, $idx) {
             return [
               'example' => $i->toArray(),
                 'insert_flag' => false,
                 'update_flag' => false,
                 'row_num' => $idx
             ];
-          }, $examples, range(1, count($examples))),
-          'group_cd' => $group_cd]);
+          }, $examples, range(1, count($examples)));
+
+        $json = json_encode([
+          'items' => $items,
+          'group_cd' => $group_cd,
+          'languages' => $languages]);
       }
 
       // group data
@@ -137,13 +142,11 @@ WHERE example_id = :example_id;");
       /* echo 3;*/
     }
 
-    $languages_json = Language::getLanguage()->toJson();
     ?>
   </head>
   <body>
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
     <script id="json-vue" data-json="<?= h($json) ?>"></script>
-    <script id="languages-vue" data-json="<?= h($languages_json) ?>"></script>
     <script id="group-vue" data-json="<?= ($group_cd == '') ? '' : h("{ \"group_cd\": ${group_cd}, \"group_name\": \"${group_name}\" }") ?>"></script>
     <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
     <script id="group-names-vue" data-json="<?= h($group_data_json) ?>"></script>
@@ -181,7 +184,7 @@ WHERE example_id = :example_id;");
               <td>
                 <span v-if="item.insert_flag">
                   <select :name="'items[' + index + '][example][language]'" v-model="item.example.language">
-                    <option v-for="language in item.languages" :value="language.language">
+                    <option v-for="language in languages" :value="language.language">
                       {{ language.language }}
                     </option>
                   </select>
