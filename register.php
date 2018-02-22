@@ -161,7 +161,7 @@ WHERE example_id = :example_id;");
             </tr>
           </thead>
           <tr v-for="item in items">
-            <td><a v-bind:href="'register?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
+            <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
           </tr>
         </table>
       </section>
