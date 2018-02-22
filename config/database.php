@@ -16,6 +16,7 @@ $capsule->addConnection([
     'driver'    => DB_DRIVER,
     'host'      => DB_HOST,
     'database'  => DB_DATABASE,
+    'port'      => DB_PORT,
     'username'  => DB_USERNAME,
     'password'  => DB_PASSWD,
     'charset'   => DB_CHARSET,
