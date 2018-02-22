@@ -49,7 +49,7 @@ use Ramsey\Pygments\Pygments;
     </table>
   </section>
 
-    <section id="app1">
+    <section id="app1" v-cloak>
       <!-- <div id="editor">some text</div> -->
           <script>
           // var editor = ace.edit("editor");

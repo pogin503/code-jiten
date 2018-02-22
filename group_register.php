@@ -75,7 +75,6 @@
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
     <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
-    <style>[v-cloak] { display: none; }</style>
 
     <form name="save-form" action="group_register.php" method="post">
       <section id="disp-group" v-cloak>

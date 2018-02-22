@@ -150,7 +150,6 @@ WHERE example_id = :example_id;");
     <script id="group-vue" data-json="<?= ($group_cd == '') ? '' : h("{ \"group_cd\": ${group_cd}, \"group_name\": \"${group_name}\" }") ?>"></script>
     <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
     <script id="group-names-vue" data-json="<?= h($group_data_json) ?>"></script>
-    <style>[v-cloak] { display: none; }</style>
       <section id="disp-group" v-cloak>
         <table v-show="seen">
           <thead>

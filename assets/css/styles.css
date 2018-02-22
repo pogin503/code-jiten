@@ -9,3 +9,4 @@ footer {
     vertical-align: bottom;
 }
 
+[v-cloak] { display: none; }
