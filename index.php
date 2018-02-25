@@ -32,7 +32,7 @@ use Ramsey\Pygments\Pygments;
 ?>
 </head>
 <body>
-<?php echo $twig->load('navbar.html.twig')->render(); ?>
+  <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
   <section id="disp-group" v-cloak>
     <table v-show="seen">

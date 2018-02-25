@@ -47,7 +47,6 @@
               (isset($row['parent_id'])) ? $row['parent_id'] : 0
             );
           }
-
         }
       }
 
