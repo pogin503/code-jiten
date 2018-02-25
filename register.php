@@ -94,10 +94,13 @@ WHERE example_id = :example_id;");
         $group_name = $group_name_row['group_name'];
       }
 
+      $languages = Language::getLanguage()->toArray();
       if(empty($examples)) {
-        $json = json_encode(['items' => []]);
+        $json = json_encode([
+            'items' => [],
+            'languages' => $languages
+        ]);
       } else {
-        $languages = Language::getLanguage()->toArray();
 
         $items = array_map(function($i, $idx) {
             return [
