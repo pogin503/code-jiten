@@ -55,7 +55,7 @@
       }
     }
 
-    $disp_group_record = ExampleGroupMapper::all();
+    $disp_group_record = ExampleGroupMapper::orderBy('parent_id', 'asc')->get();
 
     $disp_group = json_encode([
       'items' => array_map(function($record) {
