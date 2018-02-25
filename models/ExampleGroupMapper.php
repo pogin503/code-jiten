@@ -29,8 +29,14 @@ class ExampleGroupMapper extends Eloquent {
 
     public static function fetchParents($group_cd) {
         $group_stmt = DB::getPdo()->prepare("
-SELECT group_cd, group_name, \"desc\", disp_flag FROM t_example_group WHERE group_cd IN
-(SELECT group_ancestor FROM t_example_relation WHERE group_descendant = :group_cd1 AND group_ancestor <> :group_cd2);");
+        SELECT group_cd,
+               group_name, \"DESC\", disp_flag
+        FROM t_example_group
+        WHERE group_cd IN
+            (SELECT group_ancestor
+             FROM t_example_relation
+             WHERE group_descendant = :group_cd1
+               AND group_ancestor <> :group_cd2);");
         $group_stmt->bindParam(':group_cd1', intval($group_cd));
         $group_stmt->bindParam(':group_cd2', intval($group_cd));
         $group_stmt->execute();
@@ -118,8 +124,11 @@ SELECT group_cd, group_name, \"desc\", disp_flag FROM t_example_group WHERE grou
             return;
         }
         $insert_stmt = DB::getPdo()->prepare('
-INSERT INTO t_example_group (group_name, "desc", disp_flag, parent_id)
-VALUES (:group_name, :desc, :disp_flag, :parent_id) RETURNING group_cd;');
+        INSERT INTO t_example_group (group_name, "desc", disp_flag, parent_id)
+        VALUES (:group_name,
+                :desc,
+                :disp_flag,
+                :parent_id) RETURNING group_cd;');
 
         $parent_id = (is_null($parent_group_cd) ? 0 : $parent_group_cd);
         $insert_stmt->execute(
@@ -132,12 +141,16 @@ VALUES (:group_name, :desc, :disp_flag, :parent_id) RETURNING group_cd;');
         $inserted_group_cd = $insert_stmt->fetchALL(PDO::FETCH_COLUMN);
 
         $insert_stmt2 = DB::getPdo()->prepare('
-INSERT INTO t_example_relation (group_ancestor, group_descendant, depth)
-  (SELECT t.group_ancestor, cast(:group_cd1 as integer), depth + 1
-  FROM t_example_relation AS t
-  WHERE t.group_descendant = cast(:parent_id as integer))
-  UNION ALL
-  (SELECT cast(:group_cd2 as integer), cast(:group_cd3 as integer), 0);');
+        INSERT INTO t_example_relation (group_ancestor, group_descendant, depth)
+          (SELECT t.group_ancestor,
+                  cast(:group_cd1 AS integer),
+                  depth + 1
+           FROM t_example_relation AS t
+           WHERE t.group_descendant = cast(:parent_id AS integer))
+        UNION ALL
+          (SELECT cast(:group_cd2 AS integer),
+                  cast(:group_cd3 AS integer),
+                  0);');
 
         $insert_stmt2->bindValue(':group_cd1', $inserted_group_cd[0], PDO::PARAM_INT);
         $insert_stmt2->bindValue(':parent_id', $parent_id, PDO::PARAM_INT);
