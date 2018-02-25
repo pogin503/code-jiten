@@ -42,14 +42,60 @@ SELECT group_cd, group_name, \"desc\", disp_flag FROM t_example_group WHERE grou
     }
 
     public function updateGroup($group_cd, $group_name, $desc, $disp_flag, $parent_id) {
-        DB::table('t_example_group')
-            ->where('group_cd', $group_cd)
-            ->update([
-                'group_name' => $group_name,
-                'desc' => $desc,
-                'disp_flag' => $disp_flag,
-                // 'parent_id' => $parent_id
-            ]);
+        $group = DB::table($this->table)->where('group_cd', '=', $group_cd)->first();
+
+        if (($parent_id == 0 || $parent_id == null) || $group->parent_id == $parent_id) {
+            DB::table($this->table)
+                ->where('group_cd', $group_cd)
+                ->update([
+                    'group_name' => $group_name,
+                    'desc' => $desc,
+                    'disp_flag' => $disp_flag,
+                    // 'parent_id' => $parent_id
+                ]);
+        } else {
+            // group change process
+            DB::beginTransaction();
+            $delete_stmt = DB::getPdo()->prepare("
+            DELETE
+            FROM t_example_relation
+            WHERE group_descendant IN
+                (SELECT group_descendant
+                 FROM t_example_relation
+                 WHERE group_ancestor = :group_cd1)
+              AND group_ancestor IN
+                (SELECT group_ancestor
+                 FROM t_example_relation
+                 WHERE group_descendant = :group_cd2
+                   AND group_ancestor != group_descendant);");
+            $delete_stmt->bindValue('group_cd1', $group_cd, PDO::PARAM_INT);
+            $delete_stmt->bindValue('group_cd2', $group_cd, PDO::PARAM_INT);
+            $delete_stmt->execute();
+
+            DB::table($this->table)
+                ->where('group_cd', $group_cd)
+                ->update([
+                    'group_name' => $group_name,
+                    'desc' => $desc,
+                    'disp_flag' => $disp_flag,
+                    'parent_id' => $parent_id
+                ]);
+            // $this->insertGroup($group_cd, );
+            $insert_stmt = DB::getPdo()->prepare('
+            INSERT INTO t_example_relation (group_ancestor, group_descendant, depth)
+            SELECT supertree.group_ancestor,
+                   subtree.group_descendant,
+                   supertree.depth + subtree.depth + 1
+            FROM t_example_relation AS supertree
+            CROSS JOIN t_example_relation AS subtree
+            WHERE supertree.group_descendant = :parent_id
+              AND subtree.group_ancestor = :group_cd;');
+            $insert_stmt->bindValue(':parent_id', $parent_id, PDO::PARAM_INT);
+            $insert_stmt->bindValue(':group_cd', $group_cd, PDO::PARAM_INT);
+            $insert_stmt->execute();
+            DB::commit();
+        }
+
     }
 
     public function deleteGroup($group_cds) {
