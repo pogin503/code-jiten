@@ -30,7 +30,7 @@ class ExampleGroupMapper extends Eloquent {
     public static function fetchParents($group_cd) {
         $group_stmt = DB::getPdo()->prepare("
         SELECT group_cd,
-               group_name, \"DESC\", disp_flag
+               group_name, \"desc\", disp_flag
         FROM t_example_group
         WHERE group_cd IN
             (SELECT group_ancestor
