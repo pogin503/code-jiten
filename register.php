@@ -30,9 +30,6 @@
     $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      /* echo "<pre>";
-       * var_dump($_POST);
-       * echo "</pre>";*/
       if(isset($_GET['group_cd'])) {
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $insert_stmt = $db->prepare("INSERT INTO t_example (\"language\", \"example\", \"group_cd\") VALUES
@@ -61,7 +58,6 @@ WHERE example_id = :example_id;");
             $delete_stmt->execute();
           }
         }
-        /* echo "2<br/>";*/
 
       }
     }
@@ -134,15 +130,12 @@ WHERE example_id = :example_id;");
         ]);
       }
 
-      /* echo 1;*/
-
     } else {
       $disp_group = json_encode([
         'items' => ExampleGroupMapper::fetchLeaf()->toArray(),
         'seen' => true
       ]);
 
-      /* echo 3;*/
     }
 
     ?>
