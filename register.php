@@ -185,7 +185,7 @@ WHERE example_id = :example_id;");
                 :key="item.row_num">
               <td>
                 <span v-if="item.insert_flag">
-                  <select :name="'items[' + index + '][example][language]'" v-model="item.example.language">
+                  <select :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
                     <option v-for="language in languages" :value="language.language">
                       {{ language.language }}
                     </option>
@@ -197,7 +197,7 @@ WHERE example_id = :example_id;");
                 </span>
               </td>
               <td>
-                <autosize-textarea :name="'items[' + index + '][example][example]'" v-model="item.example.example">
+                <autosize-textarea :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
                   {{ item.example.example }}
                 </autosize-textarea>
               </td>
