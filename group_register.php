@@ -73,83 +73,89 @@
   <body>
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
-    <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
-
-    <form name="save-form" action="group_register.php" method="post">
-      <section id="disp-group" v-cloak>
-        <table>
-          <thead>
-            <tr>
-              <th v-for="key in gridColumns">
-                {{ key }}
-              </th>
-            </tr>
-          </thead>
-          <tr v-for="(item, index) in items">
-            <td>
-              <input :name="'items[' + index + '][group_name]'" type="text" v-model="item.group.group_name" required/>
-              <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group.group_cd" required/>
-              <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.group.insert_flag"/>
-            </td>
-            <td>
-              <select :name="'items[' + index + '][parent_id]'" v-model="item.group.parent_id">
-                <option v-for="group in group_names" :value="group.group_cd">
-                  {{ group.group_name }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <input :name="'items[' + index + '][desc]'" type="text" v-model.number="item.group.desc"/>
-            </td>
-            <td>
-              <select :name="'items[' + index + '][disp_flag]'" v-model="item.group.disp_flag" required>
-                <option v-for="disp_flag in [{ value: 0, label: '非表示'}, { value: 1, label: '表示'}]" :value="disp_flag.value">
-                  {{ disp_flag.label }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <button class="btn" type="button" v-on:click="remove(index, item.group.group_cd)">削除</button>
-            </td>
-          </tr>
-        </table>
-        <div style="display:none">
-          <span v-for="item in delete_target">
-            <input :name="'delete_target[]'" :key="item.group_cd" type="number" v-model.number="item.group_cd"/>
-          </span>
+    <main>
+      <div class="container">
+        <div class="row">
+          <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
+          <form name="save-form" action="group_register.php" method="post">
+            <section id="disp-group" v-cloak>
+              <table>
+                <thead>
+                  <tr>
+                    <th v-for="key in gridColumns">
+                      {{ key }}
+                    </th>
+                  </tr>
+                </thead>
+                <tr v-for="(item, index) in items">
+                  <td>
+                    <input :name="'items[' + index + '][group_name]'" type="text" v-model="item.group.group_name" required/>
+                    <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group.group_cd" required/>
+                    <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.group.insert_flag"/>
+                  </td>
+                  <td>
+                    <select :name="'items[' + index + '][parent_id]'" v-model="item.group.parent_id">
+                      <option v-for="group in group_names" :value="group.group_cd">
+                        {{ group.group_name }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <input :name="'items[' + index + '][desc]'" type="text" v-model.number="item.group.desc"/>
+                  </td>
+                  <td>
+                    <select :name="'items[' + index + '][disp_flag]'" v-model="item.group.disp_flag" required>
+                      <option v-for="disp_flag in [{ value: 0, label: '非表示'}, { value: 1, label: '表示'}]" :value="disp_flag.value">
+                        {{ disp_flag.label }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn" type="button" v-on:click="remove(index, item.group.group_cd)">削除</button>
+                  </td>
+                </tr>
+              </table>
+              <div style="display:none">
+                <span v-for="item in delete_target">
+                  <input :name="'delete_target[]'" :key="item.group_cd" type="number" v-model.number="item.group_cd"/>
+                </span>
+              </div>
+              <div v-show="show_flag">
+                <hr style="border:1px solid #000000;" ></hr>
+                <table>
+                  <tr v-for="(item, index) in insert_target">
+                    <td>
+                      <input :name="'insert_target[' + index + '][group_name]'" type="text" v-model="item.group_name" required/>
+                      <input :name="'insert_target[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
+                    </td>
+                    <td>
+                      <select :name="'insert_target[' + index + '][parent_id]'" v-model="item.parent_id">
+                        <option v-for="group in group_names" :value="group.group_cd">
+                          {{ group.group_name }}
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input :name="'insert_target[' + index + '][desc]'" type="text" v-model.number="item.desc"/>
+                    </td>
+                    <td>
+                      <select :name="'insert_target[' + index + '][disp_flag]'" v-model="selected" required>
+                        <option v-for="disp_flag in options" :value="disp_flag.value">
+                          {{ disp_flag.label }}
+                        </option>
+                      </select>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <button class="btn" type="button" v-on:click="add">追加</button>
+              <button class="btn" type="submit">保存</button>
+            </section>
+          </form>
+          <script src="assets/js/group.vue"></script>
         </div>
-        <div v-show="show_flag">
-          <hr style="border:1px solid #000000;" ></hr>
-          <table>
-            <tr v-for="(item, index) in insert_target">
-              <td>
-                <input :name="'insert_target[' + index + '][group_name]'" type="text" v-model="item.group_name" required/>
-                <input :name="'insert_target[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
-              </td>
-              <td>
-                <select :name="'insert_target[' + index + '][parent_id]'" v-model="item.parent_id">
-                  <option v-for="group in group_names" :value="group.group_cd">
-                    {{ group.group_name }}
-                  </option>
-                </select>
-              </td>
-              <td>
-                <input :name="'insert_target[' + index + '][desc]'" type="text" v-model.number="item.desc"/>
-              </td>
-              <td>
-                <select :name="'insert_target[' + index + '][disp_flag]'" v-model="selected" required>
-                  <option v-for="disp_flag in options" :value="disp_flag.value">
-                    {{ disp_flag.label }}
-                  </option>
-                </select>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <button class="btn" type="button" v-on:click="add">追加</button>
-        <button class="btn" type="submit">保存</button>
-      </section>
-    </form>
-    <script src="assets/js/group.vue"></script>
+      </div>
+    </main>
+    <?php echo $twig->load('footer.html')->render(); ?>
   </body>
 </html>

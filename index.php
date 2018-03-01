@@ -30,23 +30,27 @@ $disp_group = json_encode([
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
     <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
-
-    <section id="disp-group" v-cloak>
-      <table v-show="seen">
-        <thead>
-          <tr>
-            <th v-for="key in gridColumns">
-              {{ key }}
-            </th>
-          </tr>
-        </thead>
-        <tr v-for="item in items">
-          <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
-        </tr>
-      </table>
-    </section>
-
-    <!-- <script src="assets/js/script.js"></script> -->
+    <main>
+      <div class="container">
+        <div class="row">
+          <section id="disp-group" v-cloak>
+            <table v-show="seen">
+              <thead>
+                <tr>
+                  <th v-for="key in gridColumns">
+                    {{ key }}
+                  </th>
+                </tr>
+              </thead>
+              <tr v-for="item in items">
+                <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
+              </tr>
+            </table>
+          </section>
+        </div>
+      </div>
+    </main>
     <script src="assets/js/dispGroup.vue"></script>
+    <?php echo $twig->load('footer.html')->render(); ?>
   </body>
 </html>

@@ -142,77 +142,84 @@ WHERE example_id = :example_id;");
   </head>
   <body>
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
-    <script id="json-vue" data-json="<?= h($json) ?>"></script>
-    <script id="group-vue" data-json="<?= ($group_cd == '') ? '' : h("{ \"group_cd\": ${group_cd}, \"group_name\": \"${group_name}\" }") ?>"></script>
-    <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
-    <script id="group-names-vue" data-json="<?= h($group_data_json) ?>"></script>
-      <section id="disp-group" v-cloak>
-        <table v-show="seen">
-          <thead>
-            <tr>
-              <th v-for="key in gridColumns">
-                {{ key }}
-              </th>
-            </tr>
-          </thead>
-          <tr v-for="item in items">
-            <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
-          </tr>
-        </table>
-      </section>
-      <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
-        <section id="app" v-cloak>
-          <h2><a href="register.php?group_cd=<?= $group_cd; ?>">{{ group_name }}</a></h2>
-          <span v-for="name in group_names">
-            <span>[{{ name.group_name }}] </span>
-          </span>
-          <table>
-            <thead>
-              <tr>
-                <th v-for="key in gridColumns">
-                  {{ key }}
-                </th>
+    <main>
+      <div class="container">
+        <div class="row">
+          <script id="json-vue" data-json="<?= h($json) ?>"></script>
+          <script id="group-vue" data-json="<?= ($group_cd == '') ? '' : h("{ \"group_cd\": ${group_cd}, \"group_name\": \"${group_name}\" }") ?>"></script>
+          <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
+          <script id="group-names-vue" data-json="<?= h($group_data_json) ?>"></script>
+          <section id="disp-group" v-cloak>
+            <table v-show="seen">
+              <thead>
+                <tr>
+                  <th v-for="key in gridColumns">
+                    {{ key }}
+                  </th>
+                </tr>
+              </thead>
+              <tr v-for="item in items">
+                <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
               </tr>
-            </thead>
-            <tr v-for="(item, index) in items"
-                :key="item.row_num">
-              <td>
-                <span v-if="item.insert_flag">
-                  <select :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
-                    <option v-for="language in languages" :value="language.language">
-                      {{ language.language }}
-                    </option>
-                  </select>
+            </table>
+          </section>
+          <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
+            <section id="app" v-cloak>
+              <h2><a href="register.php?group_cd=<?= $group_cd; ?>">{{ group_name }}</a></h2>
+              <span v-for="name in group_names">
+                <span>[{{ name.group_name }}] </span>
+              </span>
+              <table>
+                <thead>
+                  <tr>
+                    <th v-for="key in gridColumns">
+                      {{ key }}
+                    </th>
+                  </tr>
+                </thead>
+                <tr v-for="(item, index) in items"
+                    :key="item.row_num">
+                  <td>
+                    <span v-if="item.insert_flag">
+                      <select :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
+                        <option v-for="language in languages" :value="language.language">
+                          {{ language.language }}
+                        </option>
+                      </select>
+                    </span>
+                    <span v-else>
+                      {{ item.example.language }}
+                      <input :name="'items[' + index + '][example][language]'" type="hidden" v-model="item.example.language"/>
+                    </span>
+                  </td>
+                  <td>
+                    <autosize-textarea :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
+                      {{ item.example.example }}
+                    </autosize-textarea>
+                  </td>
+                  <td>
+                    <input :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>
+                    <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
+                    <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
+                    <button class="btn" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
+                  </td>
+                </tr>
+              </table>
+              <div style="display:none;">
+                <span v-for="item in delete_target">
+                  <input :name="'delete_target[]'" :key="item.example_id" type="number" v-model.number="item.example_id"/>
                 </span>
-                <span v-else>
-                  {{ item.example.language }}
-                  <input :name="'items[' + index + '][example][language]'" type="hidden" v-model="item.example.language"/>
-                </span>
-              </td>
-              <td>
-                <autosize-textarea :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
-                  {{ item.example.example }}
-                </autosize-textarea>
-              </td>
-              <td>
-                <input :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>
-                <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
-                <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
-                <button class="btn" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
-              </td>
-            </tr>
-          </table>
-          <div style="display:none;">
-            <span v-for="item in delete_target">
-              <input :name="'delete_target[]'" :key="item.example_id" type="number" v-model.number="item.example_id"/>
-            </span>
-          </div>
-          <button class="btn" type="button" v-on:click="add">追加</button>
-          <button class="btn" type="submit">保存</button>
-        </section>
-      </form>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.16/autosize.min.js"></script>
-      <script src="assets/js/dispGroup.vue"></script>
-      <script src="assets/js/register.vue"></script>
+              </div>
+              <button class="btn" type="button" v-on:click="add">追加</button>
+              <button class="btn" type="submit">保存</button>
+            </section>
+          </form>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.16/autosize.min.js"></script>
+          <script src="assets/js/dispGroup.vue"></script>
+          <script src="assets/js/register.vue"></script>
+        </div>
+      </div>
+    </main>
+    <?php echo $twig->load('footer.html')->render(); ?>
   </body>
 </html>
