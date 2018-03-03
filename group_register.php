@@ -68,12 +68,12 @@
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
     <main>
-      <div class="container">
-        <div class="row">
+      <div class="container p-3">
+        <div class="row px-3">
           <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
           <form name="save-form" action="group_register.php" method="post">
             <section id="disp-group" v-cloak>
-              <table>
+              <table  class="table table-sm table-bordered">
                 <thead>
                   <tr>
                     <th v-for="key in gridColumns">
@@ -83,29 +83,29 @@
                 </thead>
                 <tr v-for="(item, index) in items">
                   <td>
-                    <input :name="'items[' + index + '][group_name]'" type="text" v-model="item.group.group_name" required/>
+                    <input class="form-control" :name="'items[' + index + '][group_name]'" type="text" v-model="item.group.group_name" required/>
                     <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group.group_cd" required/>
                     <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.group.insert_flag"/>
                   </td>
                   <td>
-                    <select :name="'items[' + index + '][parent_id]'" v-model="item.group.parent_id">
+                    <select class="form-control" :name="'items[' + index + '][parent_id]'" v-model="item.group.parent_id">
                       <option v-for="group in group_names" :value="group.group_cd">
                         {{ group.group_name }}
                       </option>
                     </select>
                   </td>
                   <td>
-                    <input :name="'items[' + index + '][desc]'" type="text" v-model.number="item.group.desc"/>
+                    <input class="form-control" :name="'items[' + index + '][desc]'" type="text" v-model.number="item.group.desc"/>
                   </td>
                   <td>
-                    <select :name="'items[' + index + '][disp_flag]'" v-model="item.group.disp_flag" required>
+                    <select class="form-control" :name="'items[' + index + '][disp_flag]'" v-model="item.group.disp_flag" required>
                       <option v-for="disp_flag in [{ value: 0, label: '非表示'}, { value: 1, label: '表示'}]" :value="disp_flag.value">
                         {{ disp_flag.label }}
                       </option>
                     </select>
                   </td>
                   <td>
-                    <button class="btn" type="button" v-on:click="remove(index, item.group.group_cd)">削除</button>
+                    <button class="btn btn-danger" type="button" v-on:click="remove(index, item.group.group_cd)">削除</button>
                   </td>
                 </tr>
               </table>
@@ -119,21 +119,21 @@
                 <table>
                   <tr v-for="(item, index) in insert_target">
                     <td>
-                      <input :name="'insert_target[' + index + '][group_name]'" type="text" v-model="item.group_name" required/>
+                      <input class="form-control" :name="'insert_target[' + index + '][group_name]'" type="text" v-model="item.group_name" required/>
                       <input :name="'insert_target[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
                     </td>
                     <td>
-                      <select :name="'insert_target[' + index + '][parent_id]'" v-model="item.parent_id">
+                      <select class="form-control" :name="'insert_target[' + index + '][parent_id]'" v-model="item.parent_id">
                         <option v-for="group in group_names" :value="group.group_cd">
                           {{ group.group_name }}
                         </option>
                       </select>
                     </td>
                     <td>
-                      <input :name="'insert_target[' + index + '][desc]'" type="text" v-model.number="item.desc"/>
+                      <input class="form-control" :name="'insert_target[' + index + '][desc]'" type="text" v-model.number="item.desc"/>
                     </td>
                     <td>
-                      <select :name="'insert_target[' + index + '][disp_flag]'" v-model="selected" required>
+                      <select class="form-control" :name="'insert_target[' + index + '][disp_flag]'" v-model="selected" required>
                         <option v-for="disp_flag in options" :value="disp_flag.value">
                           {{ disp_flag.label }}
                         </option>
@@ -142,8 +142,8 @@
                   </tr>
                 </table>
               </div>
-              <button class="btn" type="button" v-on:click="add">追加</button>
-              <button class="btn" type="submit">保存</button>
+              <button class="btn btn-info" type="button" v-on:click="add">追加</button>
+              <button class="btn btn-primary" type="submit">保存</button>
             </section>
           </form>
           <script src="assets/js/group.vue"></script>

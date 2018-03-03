@@ -137,14 +137,14 @@ WHERE example_id = :example_id;");
   <body>
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
     <main>
-      <div class="container">
-        <div class="row">
+      <div class="container p-3">
+        <div class="row px-3">
           <script id="json-vue" data-json="<?= h($json) ?>"></script>
           <script id="group-vue" data-json="<?= ($group_cd == '') ? '' : h("{ \"group_cd\": ${group_cd}, \"group_name\": \"${group_name}\" }") ?>"></script>
           <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
           <script id="group-names-vue" data-json="<?= h($group_data_json) ?>"></script>
           <section id="disp-group" v-cloak>
-            <table v-show="seen">
+            <table v-show="seen" class="table table-sm table-bordered">
               <thead>
                 <tr>
                   <th v-for="key in gridColumns">
@@ -163,7 +163,7 @@ WHERE example_id = :example_id;");
               <span v-for="name in group_names">
                 <span>[{{ name.group_name }}] </span>
               </span>
-              <table>
+              <table class="table table-sm table-bordered">
                 <thead>
                   <tr>
                     <th v-for="key in gridColumns">
@@ -175,7 +175,7 @@ WHERE example_id = :example_id;");
                     :key="item.row_num">
                   <td>
                     <span v-if="item.insert_flag">
-                      <select :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
+                      <select class="form-control" :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
                         <option v-for="language in languages" :value="language.language">
                           {{ language.language }}
                         </option>
@@ -187,15 +187,15 @@ WHERE example_id = :example_id;");
                     </span>
                   </td>
                   <td>
-                    <autosize-textarea :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
+                    <autosize-textarea class="form-control" :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
                       {{ item.example.example }}
                     </autosize-textarea>
                   </td>
                   <td>
-                    <input :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>
+                    <input class="form-control" :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>
                     <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
                     <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
-                    <button class="btn" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
+                    <button class="btn btn-danger" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
                   </td>
                 </tr>
               </table>
@@ -204,8 +204,8 @@ WHERE example_id = :example_id;");
                   <input :name="'delete_target[]'" :key="item.example_id" type="number" v-model.number="item.example_id"/>
                 </span>
               </div>
-              <button class="btn" type="button" v-on:click="add">追加</button>
-              <button class="btn" type="submit">保存</button>
+              <button class="btn btn-info" type="button" v-on:click="add">追加</button>
+              <button class="btn btn-primary" type="submit">保存</button>
             </section>
           </form>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.16/autosize.min.js"></script>

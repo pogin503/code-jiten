@@ -23,12 +23,12 @@ $disp_group = json_encode([
   <body>
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
-    <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
     <main>
-      <div class="container">
-        <div class="row">
+      <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
+      <div class="container p-3">
+        <div class="row px-3">
           <section id="disp-group" v-cloak>
-            <table v-show="seen">
+            <table v-show="seen" class="table table-sm table-bordered">
               <thead>
                 <tr>
                   <th v-for="key in gridColumns">
@@ -43,8 +43,8 @@ $disp_group = json_encode([
           </section>
         </div>
       </div>
+      <script src="assets/js/dispGroup.vue"></script>
     </main>
-    <script src="assets/js/dispGroup.vue"></script>
     <?php echo $twig->load('footer.html')->render(); ?>
   </body>
 </html>
