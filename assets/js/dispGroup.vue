@@ -4,7 +4,7 @@ var disp_group_app = new Vue({
     el: "#disp-group",
     data: Object.assign(
         {
-            gridColumns: ['グループ名'],
+            gridColumns: ['タイトル'],
         },
         disp_group
     )
