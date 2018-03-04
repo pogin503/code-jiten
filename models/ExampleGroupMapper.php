@@ -16,6 +16,7 @@ class ExampleGroupMapper extends Eloquent {
         return self::query()
             ->select('group_cd', 'group_name')
             ->where('disp_flag', '=', 1)
+            ->orderBy('parent_id', 'asc')
             ->get();
     }
 
