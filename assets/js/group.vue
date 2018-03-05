@@ -8,24 +8,24 @@ const groupNames = dispGroup.items.map(function (element) {
 
 const dispGroupApp = new Vue({
     el: "#disp-group",
-    data: Object.assign(dispGroup,
-                        {
-                            show_flag: false,
-                            gridColumns: ['グループ名', '親グループ', 'desc', '表示フラグ'],
-                            delete_target: [],
-                            insert_target: [],
-                            group_names: groupNames,
-                            selected: 1,
-                            options: [
-                                { label: "非表示", value: 0 },
-                                { label: "表示", value: 1 },
-                            ],
-                        }
-                       ),
+    data: Object.assign(
+        dispGroup,
+        {
+            show_flag: false,
+            gridColumns: ['グループ名', '親グループ', 'desc', '表示フラグ'],
+            delete_target: [],
+            insert_target: [],
+            group_names: groupNames,
+            options: [
+                { label: "非表示", value: 0 },
+                { label: "表示", value: 1 },
+            ],
+        }
+    ),
     methods: {
         add: function(event) {
             dispGroupApp.$data.insert_target.push({
-                group: '',
+                group: { disp_flag: 1 },
                 insert_flag: true,
                 parent_id: -1,
             });
