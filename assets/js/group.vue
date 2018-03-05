@@ -25,7 +25,7 @@ const dispGroupApp = new Vue({
     methods: {
         add: function(event) {
             dispGroupApp.$data.insert_target.push({
-                group: { disp_flag: 1 },
+                disp_flag: 1,
                 insert_flag: true,
                 parent_id: -1,
             });

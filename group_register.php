@@ -137,7 +137,7 @@
                       </td>
                       <td>
                         <select class="form-control" :name="'insert_target[' + index + '][disp_flag]'" v-model="item.disp_flag" required>
-                          <option v-for="disp_flag in options" :value="disp_flag.value">
+                          <option v-for="disp_flag in options" :value="disp_flag.value" selected="{{ disp_flag.value == item.disp_flag }}">
                             {{ disp_flag.label }}
                           </option>
                         </select>
