@@ -152,9 +152,11 @@ WHERE example_id = :example_id;");
                   </th>
                 </tr>
               </thead>
-              <tr v-for="item in items">
-                <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
-              </tr>
+              <tbody>
+                <tr v-for="item in items">
+                  <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
+                </tr>
+              </tbody>
             </table>
           </section>
           <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
@@ -171,33 +173,35 @@ WHERE example_id = :example_id;");
                     </th>
                   </tr>
                 </thead>
-                <tr v-for="(item, index) in items"
-                    :key="item.row_num">
-                  <td>
-                    <span v-if="item.insert_flag">
-                      <select class="form-control" :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
-                        <option v-for="language in languages" :value="language.language">
-                          {{ language.language }}
-                        </option>
-                      </select>
-                    </span>
-                    <span v-else>
-                      {{ item.example.language }}
-                      <input :name="'items[' + index + '][example][language]'" type="hidden" v-model="item.example.language"/>
-                    </span>
-                  </td>
-                  <td>
-                    <autosize-textarea class="form-control" :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
-                      {{ item.example.example }}
-                    </autosize-textarea>
-                  </td>
-                  <td>
-                    <input class="form-control" :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>
-                    <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
-                    <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
-                    <button class="btn btn-danger" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
-                  </td>
-                </tr>
+                <tbody>
+                  <tr v-for="(item, index) in items"
+                      :key="item.row_num">
+                    <td>
+                      <span v-if="item.insert_flag">
+                        <select class="form-control" :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
+                          <option v-for="language in languages" :value="language.language">
+                            {{ language.language }}
+                          </option>
+                        </select>
+                      </span>
+                      <span v-else>
+                        {{ item.example.language }}
+                        <input :name="'items[' + index + '][example][language]'" type="hidden" v-model="item.example.language"/>
+                      </span>
+                    </td>
+                    <td>
+                      <autosize-textarea class="form-control" :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
+                        {{ item.example.example }}
+                      </autosize-textarea>
+                    </td>
+                    <td>
+                      <input class="form-control" :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>
+                      <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group_cd"/>
+                      <input :name="'items[' + index + '][insert_flag]'" type="hidden" v-model="item.insert_flag"/>
+                      <button class="btn btn-danger" type="button" v-on:click="remove(index, item.example.example_id)">削除</button>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
               <div style="display:none;">
                 <span v-for="item in delete_target">
