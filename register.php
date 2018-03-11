@@ -212,7 +212,7 @@ WHERE example_id = :example_id;");
               <button class="btn btn-primary" type="submit">保存</button>
             </section>
           </form>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.16/autosize.min.js"></script>
+          <script src="assets/autosize/autosize.js"></script>
           <script src="assets/js/dispGroup.vue"></script>
           <script src="assets/js/register.vue"></script>
         </div>
