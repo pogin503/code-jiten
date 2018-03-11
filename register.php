@@ -163,7 +163,7 @@ WHERE example_id = :example_id;");
               </thead>
               <tbody>
                 <tr v-for="item in items">
-                  <td><a v-bind:href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
+                  <td><a :href="'register.php?parent_id=' + item.parent_id">{{ item.parent_name }}</a> / <a :href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
                 </tr>
               </tbody>
             </table>

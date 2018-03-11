@@ -13,26 +13,29 @@ class ExampleGroupMapper extends Eloquent {
     }
 
     public static function fetchLeaf() {
-        return self::query()
-            ->select('group_cd', 'group_name')
-            ->where('disp_flag', '=', 1)
-            ->orderBy('parent_id', 'asc')
+        return DB::table('t_example_group AS eg1')
+            ->select('eg1.group_cd', 'eg1.group_name', 'eg1.parent_id', 'eg2.group_name AS parent_name')
+            ->join('t_example_group AS eg2', 'eg1.parent_id', '=', 'eg2.group_cd')
+            ->where('eg1.disp_flag', '=', 1)
+            ->orderBy('eg1.parent_id', 'asc')
             ->get();
     }
 
     public static function fetchChilds(int $group_cd){
         $group_stmt = DB::getPdo()->prepare("
-        SELECT group_cd,
-               group_name,
-               \"desc\",
-               disp_flag,
-               parent_id
-        FROM t_example_group
-        WHERE group_cd IN
+        SELECT eg1.group_cd,
+               eg1.group_name,
+               eg1.\"desc\",
+               eg1.disp_flag,
+               eg1.parent_id,
+               eg2.group_name AS parent_name
+        FROM t_example_group eg1
+        JOIN t_example_group eg2 ON eg1.parent_id = eg2.group_cd
+        WHERE eg1.group_cd IN
             (SELECT group_descendant
              FROM t_example_relation
              WHERE group_ancestor = :group_cd)
-          AND disp_flag = 1;");
+          AND eg1.disp_flag = 1;");
         $group_stmt->bindParam(':group_cd', $group_cd);
         $group_stmt->execute();
         return $group_stmt->fetchAll(PDO::FETCH_ASSOC);
