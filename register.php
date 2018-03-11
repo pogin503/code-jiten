@@ -22,6 +22,7 @@
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
     $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;
+    $parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if(isset($_GET['group_cd'])) {
@@ -118,17 +119,25 @@ WHERE example_id = :example_id;");
         $group_data_json = json_encode(['group_names' =>
           array_map(function($i) {
             return [
-              'group_name' => $i->group_name
+              'group_cd' => $i->group_cd,
+                'group_name' => $i->group_name
             ];
           }, $group_data),
         ]);
       }
 
     } else {
-      $disp_group = json_encode([
-        'items' => ExampleGroupMapper::fetchLeaf()->toArray(),
-        'seen' => true
-      ]);
+      if (empty($parent_id)) {
+        $disp_group = json_encode([
+          'items' => ExampleGroupMapper::fetchLeaf()->toArray(),
+            'seen' => true
+        ]);
+      } else {
+        $disp_group = json_encode([
+          'items' => ExampleGroupMapper::fetchChilds(intval($parent_id)),
+            'seen' => true
+        ]);
+      }
 
     }
 
@@ -162,8 +171,8 @@ WHERE example_id = :example_id;");
           <form name="save-form" action="register.php?group_cd=<?= $group_cd; ?>" method="post">
             <section id="app" v-cloak>
               <h2><a href="register.php?group_cd=<?= $group_cd; ?>">{{ group_name }}</a></h2>
-              <span v-for="name in group_names">
-                <span>[{{ name.group_name }}] </span>
+              <span v-for="item in group_names">
+                <span><a :href="'register.php?parent_id=' + item.group_cd">[{{ item.group_name }}]</a></span>
               </span>
               <table class="table table-sm table-bordered">
                 <thead>

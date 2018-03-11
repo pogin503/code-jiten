@@ -20,12 +20,22 @@ class ExampleGroupMapper extends Eloquent {
             ->get();
     }
 
-    public function getChild($group_cd){
-        //         $data = DB::select("
-        // SELECT group_cd, group_name, group_level, \"desc\", disp_flag
-        // FROM t_example_group
-        // where group_cd = :group_cd;", ['group_cd' => $group_cd]);
-        // 	return $data;
+    public static function fetchChilds(int $group_cd){
+        $group_stmt = DB::getPdo()->prepare("
+        SELECT group_cd,
+               group_name,
+               \"desc\",
+               disp_flag,
+               parent_id
+        FROM t_example_group
+        WHERE group_cd IN
+            (SELECT group_descendant
+             FROM t_example_relation
+             WHERE group_ancestor = :group_cd)
+          AND disp_flag = 1;");
+        $group_stmt->bindParam(':group_cd', $group_cd);
+        $group_stmt->execute();
+        return $group_stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function fetchParents($group_cd) {
