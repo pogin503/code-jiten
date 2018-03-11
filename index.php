@@ -37,7 +37,7 @@ $disp_group = json_encode([
                 </tr>
               </thead>
               <tr v-for="item in items">
-                <td><a :href="'register.php?group_cd=' + item.parent_id">{{ item.parent_name }}</a> / <a :href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
+                <td><a :href="'register.php?parent_id=' + item.parent_id">{{ item.parent_name }}</a> / <a :href="'register.php?group_cd=' + item.group_cd">{{ item.group_name }}</a></td>
               </tr>
             </table>
           </section>
