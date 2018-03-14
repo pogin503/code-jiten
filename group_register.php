@@ -1,68 +1,69 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <?php
-    require_once './vendor/autoload.php';
-    require_once './src/functions.php';
-    require_once './models/ExampleGroup.php';
-    require_once './models/ExampleGroupMapper.php';
+<?php
+require_once './vendor/autoload.php';
+require_once './src/functions.php';
+require_once './models/ExampleGroup.php';
+require_once './models/ExampleGroupMapper.php';
 
-    $loader = new Twig_Loader_Filesystem('views');
-    $twig = new Twig_Environment($loader, array(
-      //'cache' => './compilation_cache',
-      'debug' => true,
-    ));
+$loader = new Twig_Loader_Filesystem('views');
+$twig = new Twig_Environment($loader, array(
+    //'cache' => './compilation_cache',
+    'debug' => true,
+));
 
-    $twig->addExtension(new Twig_Extension_Debug());
-    $template = $twig->load('header.html.twig');
-    echo $template->render();
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $mapper = new ExampleGroupMapper();
-      foreach($_POST['items'] as $row) {
+$twig->addExtension(new Twig_Extension_Debug());
+echo $twig->load('header.html.twig')->render();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $mapper = new ExampleGroupMapper();
+    foreach($_POST['items'] as $row) {
         $mapper->updateGroup(
-          $row['group_cd'],
-          $row['group_name'],
-          $row['desc'],
-          $row['disp_flag'],
-          (isset($row['parent_id'])) ? $row['parent_id'] : 0
+            $row['group_cd'],
+            $row['group_name'],
+            $row['desc'],
+            $row['disp_flag'],
+            (isset($row['parent_id'])) ? $row['parent_id'] : 0
         );
-      }
-      if (!empty($_POST['insert_target'])) {
+    }
+    if (!empty($_POST['insert_target'])) {
         foreach($_POST['insert_target'] as $row) {
-          if (isset($row['group_name'])
-            ||  isset($row['desc'])
-            ||  isset($row['disp_flag'])
-            ||  !empty($row['parent_id']))
-          {
-            $mapper->insertGroup(
-              $row['group_name'],
-              $row['desc'],
-              $row['disp_flag'],
-              (isset($row['parent_id'])) ? $row['parent_id'] : 0
-            );
-          }
+            if (isset($row['group_name'])
+                ||  isset($row['desc'])
+                ||  isset($row['disp_flag'])
+                ||  !empty($row['parent_id']))
+            {
+                $mapper->insertGroup(
+                    $row['group_name'],
+                    $row['desc'],
+                    $row['disp_flag'],
+                    (isset($row['parent_id'])) ? $row['parent_id'] : 0
+                );
+            }
         }
-      }
-
-      if (!empty($_POST['delete_target'])) {
-        $mapper->deleteGroup($_POST['delete_target']);
-      }
     }
 
-    $disp_group_record = ExampleGroupMapper::orderBy('parent_id', 'asc')->get();
+    if (!empty($_POST['delete_target'])) {
+        $mapper->deleteGroup($_POST['delete_target']);
+    }
+}
 
-    $disp_group = json_encode([
-      'items' => array_map(function($record) {
+$disp_group_record = ExampleGroupMapper::orderBy('parent_id', 'asc')->get();
+$example_array = array_map(function($record) {
+    return new ExampleGroup($record);
+}, $disp_group_record->toArray());
+
+$disp_group = json_encode([
+    'items' => array_map(function($record) {
         return [
-          'group' => $record->toArray(),
+            'group' => $record->toArray(),
             'insert_flag' => false,
             'parent_id' => -1,
         ];
-      }, array_map(function($record) {
-        return new ExampleGroup($record);
-      }, $disp_group_record->toArray())),
-    ]);
-    ?>
+    }, $example_array),
+]);
+?>
   </head>
   <body>
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
