@@ -4,6 +4,7 @@
 <?php
 require_once './vendor/autoload.php';
 require_once './models/Example.php';
+require_once './models/ExampleMapper.php';
 require_once './models/ExampleGroup.php';
 require_once './models/ExampleGroupMapper.php';
 require_once './models/Language.php';
@@ -19,37 +20,32 @@ $twig = new Twig_Environment($loader, array(
 $twig->addExtension(new Twig_Extension_Debug());
 echo $twig->load('header.html.twig')->render();
 
-$db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
 $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;
 $parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(isset($_GET['group_cd'])) {
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $insert_stmt = $db->prepare("INSERT INTO t_example (\"language\", \"example\", \"group_cd\") VALUES
-(:language, :example, :group_cd)");
-        $update_stmt = $db->prepare("UPDATE t_example SET language = :language, example = :example
-WHERE example_id = :example_id;");
+        $mapper = new ExampleMapper();
         if (!empty($_POST['items'])) {
             foreach ($_POST['items'] as $row) {
                 if ($row['insert_flag'] == "true") {
-                    $insert_stmt->bindParam(':language',$row['example']['language']);
-                    $insert_stmt->bindParam(':example', $row['example']['example']);
-                    $insert_stmt->bindParam(':group_cd',intval($row['group_cd']));
-                    $insert_stmt->execute();
+                    $mapper->insertExample(
+                        $row['example']['language'],
+                        $row['example']['example'],
+                        intval($row['group_cd'])
+                    );
                 } else {
-                    $update_stmt->bindParam(':language',$row['example']['language']);
-                    $update_stmt->bindParam(':example', $row['example']['example']);
-                    $update_stmt->bindParam(':example_id',intval($row['example']['example_id']));
-                    $update_stmt->execute();
+                    $mapper->updateExample(
+                        $row['example']['language'],
+                        $row['example']['example'],
+                        intval($row['example']['example_id'])
+                    );
                 }
             }
         }
         if (!empty($_POST['delete_target'])) {
-            $delete_stmt = $db->prepare('DELETE FROM t_example WHERE example_id = :example_id;');
             foreach($_POST['delete_target'] as $example_id){
-                $delete_stmt->bindParam(':example_id', intval($example_id));
-                $delete_stmt->execute();
+                $mapper->deleteExample(intval($example_id));
             }
         }
     }
@@ -63,6 +59,8 @@ $group_data_json = '';
 
 if(isset($group_cd)) {
 
+    $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // example data
     $examples_stmt = $db->prepare("SELECT example_id, language, example, group_cd, group_name FROM v_example_desc WHERE group_cd = :group_cd;");
     $examples_stmt->bindParam(':group_cd', intval($group_cd));
