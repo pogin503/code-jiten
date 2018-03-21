@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($_POST['delete_target'])) {
-        $mapper->deleteGroup($_POST['delete_target']);
+        $mapper->deleteGroup(array_map('intval', $_POST['delete_target']));
     }
 }
 
