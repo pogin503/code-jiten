@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../config/database.php');
 
 use Illuminate\Database\Capsule\Manager as DB;
@@ -119,7 +120,7 @@ class ExampleGroupMapper extends Eloquent {
             ->whereIn('group_descendant', $group_cds)
             ->delete();
 
-        DB::table('t_example_group')
+        DB::table($this->table)
             ->whereIn('group_cd', $group_cds)
             ->delete();
     }
@@ -133,6 +134,7 @@ class ExampleGroupMapper extends Eloquent {
             echo '登録できませんでした。';
             return;
         }
+        DB::beginTransaction();
         $insert_stmt = DB::getPdo()->prepare('
         INSERT INTO t_example_group (group_name, "desc", disp_flag, parent_id)
         VALUES (:group_name,
