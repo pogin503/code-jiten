@@ -83,7 +83,8 @@ $disp_group = json_encode([
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item, index) in items">
+                  <tr v-for="(item, index) in items"
+                      :key="item.group_cd">
                     <td>
                       <input class="form-control" :name="'items[' + index + '][group_name]'" type="text" v-model="item.group.group_name" required/>
                       <input :name="'items[' + index + '][group_cd]'" type="hidden" v-model.number="item.group.group_cd" required/>
