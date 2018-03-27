@@ -4,9 +4,10 @@
 # DBPASSWD=postgres
 USERNAME=postgres
 DBNAME=postgres
-SCHEMA=1_mydb.schema.sql
-DATA=2_mydb.data.sql
+SCHEMA=1_mydb.schema
+DATA=2_mydb.data
 HOST=localhost
 PORT=5432
 EXTRA=
-OUTPUT_DIR=~/var/lib/postgresql/10/dump
+BACKUP_DIR=~/var/lib/postgresql/10/dump
+RESTORE_DIR=~/var/lib/postgresql/10/dump
