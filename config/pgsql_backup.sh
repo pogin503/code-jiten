@@ -17,12 +17,12 @@ for TABLE in $TABLES; do
 		> "$BACKUP_DIR/${DATE_DIR}/${DATA}_${TABLE}.sql"
 done
 
-TABLES_WITH_OPS=$(for x in $TABLES; do printf " -t %s" "$x"; done)
+TABLES_WITH_OPT=$(for x in $TABLES; do printf " -t %s" "$x"; done)
 
 # shellcheck disable=SC2086
-pg_dump --username="$USERNAME" -h "$HOST" -p "$PORT" --schema-only "$DBNAME" --if-exists --clean ${TABLES_WITH_OPS} \
+pg_dump --username="$USERNAME" -h "$HOST" -p "$PORT" --schema-only "$DBNAME" --if-exists --clean ${TABLES_WITH_OPT} \
 		    > "$BACKUP_DIR/${DATE_DIR}/${SCHEMA}.sql"
 
 # shellcheck disable=SC2086
-pg_dump --username="$USERNAME" -h "$HOST" -p "$PORT" --data-only --disable-triggers "$DBNAME" ${TABLES_WITH_OPS} \
+pg_dump --username="$USERNAME" -h "$HOST" -p "$PORT" --data-only --disable-triggers "$DBNAME" ${TABLES_WITH_OPT} \
 		    > "$BACKUP_DIR/${DATE_DIR}/${DATA}.sql"
