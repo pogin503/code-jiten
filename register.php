@@ -82,8 +82,9 @@ if(isset($group_cd)) {
         $group_name = $group_name_row['group_name'];
     }
 
-    $languages = Language::getLanguage()->toArray();
-    if(empty($examples)) {
+    $languages = Language::getWithTemplate()->toArray();
+
+    if (empty($examples)) {
         $json = json_encode([
             'items' => [],
             'languages' => $languages
@@ -185,6 +186,7 @@ if(isset($group_cd)) {
                     <td>
                       <span v-if="item.insert_flag">
                         <select class="form-control" :name="'items[' + index + '][example][language_id]'"
+                                v-on:change="addTemplate(item, item.example.language_id)"
                                 v-model="item.example.language_id"
                                 required>
                           <option v-for="language in languages" :value="language.language_id">
@@ -199,9 +201,7 @@ if(isset($group_cd)) {
                       </span>
                     </td>
                     <td>
-                      <autosize-textarea class="form-control" :name="'items[' + index + '][example][example]'" v-model="item.example.example" required>
-                        {{ item.example.example }}
-                      </autosize-textarea>
+                      <autosize-textarea class="form-control" :name="'items[' + index + '][example][example]'" v-model="item.example.example" required></autosize-textarea>
                     </td>
                     <td>
                       <input class="form-control" :name="'items[' + index + '][example][example_id]'" type="hidden" v-model.number="item.example.example_id"/>

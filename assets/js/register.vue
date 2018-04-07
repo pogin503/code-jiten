@@ -66,6 +66,14 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
                     v.$data.delete_target.push({"example_id": example_id});
                 }
                 return false;
+            },
+            addTemplate: function(item, language_id) {
+                for (var i = 0; i < v.$data.languages.length; i++) {
+                    if (v.$data.languages[i]['language_id'] === language_id) {
+                        item.example.example = v.$data.languages[i]['template'];
+                        break;
+                    }
+                }
             }
         }
     });
