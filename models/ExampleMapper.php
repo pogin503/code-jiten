@@ -12,20 +12,20 @@ class ExampleMapper extends Eloquent {
 
     public function __construct() {
     }
-    public function insertExample(string $language, string $example, int $group_cd){
+    public function insertExample(int $language_id, string $example, int $group_cd){
         DB::table($this->table)
             ->insert(
-                ['language' => $language,
+                ['language_id' => $language_id,
                  'example' => $example,
                  'group_cd' => $group_cd]
         );
     }
 
-    public function updateExample(string $language, string $example, int $example_id) {
+    public function updateExample(string $example, int $example_id) {
         DB::table($this->table)
             ->where('example_id', '=', $example_id)
             ->update(
-                ['language' => $language, 'example' => $example]
+                ['example' => $example]
             );
     }
 

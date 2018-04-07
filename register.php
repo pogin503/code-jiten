@@ -30,13 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             foreach ($_POST['items'] as $row) {
                 if ($row['insert_flag'] == "true") {
                     $mapper->insertExample(
-                        $row['example']['language'],
+                        intval($row['example']['language_id']),
                         $row['example']['example'],
                         intval($row['group_cd'])
                     );
                 } else {
                     $mapper->updateExample(
-                        $row['example']['language'],
                         $row['example']['example'],
                         intval($row['example']['example_id'])
                     );
@@ -62,7 +61,9 @@ if(isset($group_cd)) {
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // example data
-    $examples_stmt = $db->prepare("SELECT example_id, language, example, group_cd, group_name FROM v_example_desc WHERE group_cd = :group_cd;");
+    $examples_stmt = $db->prepare(
+        "SELECT example_id, example, language_id, language, group_cd, group_name
+         FROM v_example_desc WHERE group_cd = :group_cd;");
     $examples_stmt->bindParam(':group_cd', intval($group_cd));
     $examples_stmt->execute();
     $example_records = $examples_stmt->fetchALL(PDO::FETCH_ASSOC);
@@ -183,8 +184,10 @@ if(isset($group_cd)) {
                       :key="item.row_num">
                     <td>
                       <span v-if="item.insert_flag">
-                        <select class="form-control" :name="'items[' + index + '][example][language]'" v-model="item.example.language" required>
-                          <option v-for="language in languages" :value="language.language">
+                        <select class="form-control" :name="'items[' + index + '][example][language_id]'"
+                                v-model="item.example.language_id"
+                                required>
+                          <option v-for="language in languages" :value="language.language_id">
                             {{ language.language }}
                           </option>
                         </select>
@@ -192,6 +195,7 @@ if(isset($group_cd)) {
                       <span v-else>
                         {{ item.example.language }}
                         <input :name="'items[' + index + '][example][language]'" type="hidden" v-model="item.example.language"/>
+                        <input :name="'items[' + index + '][example][language_id]'" type="hidden" v-model="item.example.language_id"/>
                       </span>
                     </td>
                     <td>

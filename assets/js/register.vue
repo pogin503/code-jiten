@@ -33,20 +33,25 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
             'autosize-textarea': AutosizeTextarea
         },
         el: '#app',
-        data: Object.assign(
-            {
-                gridColumns: ['言語', '実行例', ''],
-                delete_target: [],
-            },
-            group_set,
-            json,
-            group_names
-        ),
+        data: function() {
+            return Object.assign(
+                {
+                    gridColumns: ['言語', '実行例', ''],
+                    delete_target: [],
+                },
+                group_set,
+                json,
+                group_names);
+        },
         methods: {
             add: function (event) {
                 v.$data.items.push(
                     Object.assign({}, group_set, {
-                        example: { language: '' },
+                        example: {
+                            language_id: '',
+                            language: '',
+                            example: ''
+                        },
                         insert_flag: true,
                         update_flag: false,
                         show_flag: true,
