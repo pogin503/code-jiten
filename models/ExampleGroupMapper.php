@@ -36,8 +36,8 @@ class ExampleGroupMapper extends Eloquent {
             (SELECT group_descendant
              FROM t_example_relation
              WHERE group_ancestor = :group_cd)
-          AND eg1.disp_flag = 1;
-        ORDER BY eg1.parent_id");
+          AND eg1.disp_flag = 1
+        ORDER BY eg1.parent_id;");
         $group_stmt->bindParam(':group_cd', $group_cd);
         $group_stmt->execute();
         return $group_stmt->fetchAll(PDO::FETCH_ASSOC);
