@@ -36,7 +36,8 @@ class ExampleGroupMapper extends Eloquent {
             (SELECT group_descendant
              FROM t_example_relation
              WHERE group_ancestor = :group_cd)
-          AND eg1.disp_flag = 1;");
+          AND eg1.disp_flag = 1;
+        ORDER BY eg1.parent_id");
         $group_stmt->bindParam(':group_cd', $group_cd);
         $group_stmt->execute();
         return $group_stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -85,8 +86,8 @@ class ExampleGroupMapper extends Eloquent {
                  FROM t_example_relation
                  WHERE group_descendant = :group_cd2
                    AND group_ancestor != group_descendant);");
-            $delete_stmt->bindValue('group_cd1', $group_cd, PDO::PARAM_INT);
-            $delete_stmt->bindValue('group_cd2', $group_cd, PDO::PARAM_INT);
+            $delete_stmt->bindValue(':group_cd1', $group_cd, PDO::PARAM_INT);
+            $delete_stmt->bindValue(':group_cd2', $group_cd, PDO::PARAM_INT);
             $delete_stmt->execute();
 
             DB::table($this->table)
