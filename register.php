@@ -24,7 +24,7 @@ $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;
 $parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_GET['group_cd'])) {
+    if (isset($_GET['group_cd'])) {
         $mapper = new ExampleMapper();
         if (!empty($_POST['items'])) {
             foreach ($_POST['items'] as $row) {
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if (!empty($_POST['delete_target'])) {
-            foreach($_POST['delete_target'] as $example_id){
+            foreach ($_POST['delete_target'] as $example_id) {
                 $mapper->deleteExample(intval($example_id));
             }
         }
@@ -56,7 +56,7 @@ $disp_group = '';
 $group_name = null;
 $group_data_json = '';
 
-if(isset($group_cd)) {
+if (isset($group_cd)) {
 
     $db = new PDO(PDO_DSN, DB_USERNAME, DB_PASSWD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -107,7 +107,7 @@ if(isset($group_cd)) {
     }
 
     // group data
-    $group_data = array_map(function($i) {
+    $group_data = array_map(function ($i) {
         return new ExampleGroup($i);
     }, ExampleGroupMapper::fetchParents($group_cd));
 
@@ -116,7 +116,7 @@ if(isset($group_cd)) {
     } else {
         $group_data_json = json_encode(
             ['group_names' =>
-             array_map(function($i) {
+             array_map(function ($i) {
                  return [
                      'group_cd' => $i->group_cd,
                      'group_name' => $i->group_name

@@ -63,7 +63,7 @@ if (isJSON(document.getElementById('group-vue').dataset.json)) {
                 // this.show_flag = false;
                 if(confirm("Are you sure?")) {
                     v.$data.items.splice(index, 1);
-                    v.$data.delete_target.push({"example_id": example_id});
+                    v.$data.delete_target.push({ "example_id": example_id });
                 }
                 return false;
             },

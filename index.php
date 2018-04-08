@@ -24,7 +24,7 @@ $disp_group = json_encode([
     <?php echo $twig->load('navbar.html.twig')->render(); ?>
 
     <main>
-      <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group) ?>"></script>
+      <script id="disp-group-vue" data-json="<?php echo ($disp_group == '') ? '{&quot;items&quot;: null, &quot;seen&quot;: false}' : h($disp_group); ?>"></script>
       <div class="container p-3">
         <div class="row px-3">
           <section id="disp-group" v-cloak>

@@ -3,7 +3,7 @@ abstract class ValueObject
 {
     public function __construct(array $params)
     {
-        foreach($params as $propertyName => $value) {
+        foreach ($params as $propertyName => $value) {
             $this->$propertyName = $value;
         }
     }
@@ -17,10 +17,11 @@ abstract class ValueObject
         return $this->$propertyName;
     }
 
-    public function toArray() {
+    public function toArray()
+    {
         $class_vars = get_object_vars($this);
         $rtn = [];
-        foreach($class_vars as $propertyName => $value) {
+        foreach ($class_vars as $propertyName => $value) {
             $rtn["$propertyName"] = $value;
         }
         return $rtn;

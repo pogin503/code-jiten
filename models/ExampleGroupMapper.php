@@ -6,14 +6,17 @@ require_once(dirname(__FILE__) . '/../config/database.php');
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class ExampleGroupMapper extends Eloquent {
+class ExampleGroupMapper extends Eloquent
+{
 
     protected $table = 't_example_group';
 
-    public function __construct() {
+    public function __construct()
+    {
     }
 
-    public static function fetchLeaf() {
+    public static function fetchLeaf()
+    {
         return DB::table('t_example_group AS eg1')
             ->select('eg1.group_cd', 'eg1.group_name', 'eg1.parent_id', 'eg2.group_name AS parent_name')
             ->join('t_example_group AS eg2', 'eg1.parent_id', '=', 'eg2.group_cd')
@@ -22,7 +25,8 @@ class ExampleGroupMapper extends Eloquent {
             ->get();
     }
 
-    public static function fetchChilds(int $group_cd){
+    public static function fetchChilds(int $group_cd)
+    {
         $group_stmt = DB::getPdo()->prepare("
         SELECT eg1.group_cd,
                eg1.group_name,
@@ -43,7 +47,8 @@ class ExampleGroupMapper extends Eloquent {
         return $group_stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function fetchParents(int $group_cd) {
+    public static function fetchParents(int $group_cd)
+    {
         $group_stmt = DB::getPdo()->prepare("
         SELECT group_cd,
                group_name, \"desc\", disp_flag
@@ -59,7 +64,8 @@ class ExampleGroupMapper extends Eloquent {
         return $group_stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateGroup(int $group_cd, string $group_name, string $desc, $disp_flag, int $parent_id) {
+    public function updateGroup(int $group_cd, string $group_name, string $desc, $disp_flag, int $parent_id)
+    {
         $group = DB::table($this->table)->where('group_cd', '=', $group_cd)->first();
 
         if (($parent_id == 0 || $parent_id == null) || $group->parent_id == $parent_id) {
@@ -116,7 +122,8 @@ class ExampleGroupMapper extends Eloquent {
 
     }
 
-    public function deleteGroup(array $group_cds) {
+    public function deleteGroup(array $group_cds)
+    {
         DB::table('t_example_relation')
             ->whereIn('group_descendant', $group_cds)
             ->delete();
@@ -125,7 +132,8 @@ class ExampleGroupMapper extends Eloquent {
             ->whereIn('group_cd', $group_cds)
             ->delete();
     }
-    public function insertGroup(string $group_name, string $desc, $disp_flag, int $parent_group_cd) {
+    public function insertGroup(string $group_name, string $desc, $disp_flag, int $parent_group_cd)
+    {
 
         $isAllowedId = function ($id) {
             return $id >= 0;

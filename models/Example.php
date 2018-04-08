@@ -7,7 +7,8 @@ class Example {
     private $_group_cd;
     private $_group_name;
 
-    public function __construct(array $source) {
+    public function __construct(array $source)
+    {
         $this->_example_id = $source['example_id'];
         $this->_example = $source['example'];
         $this->_language_id = $source['language_id'];

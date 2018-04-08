@@ -18,7 +18,7 @@ echo $twig->load('header.html.twig')->render();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mapper = new ExampleGroupMapper();
-    foreach($_POST['items'] as $row) {
+    foreach ($_POST['items'] as $row) {
         $mapper->updateGroup(
             $row['group_cd'],
             $row['group_name'],
@@ -28,12 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
     }
     if (!empty($_POST['insert_target'])) {
-        foreach($_POST['insert_target'] as $row) {
+        foreach ($_POST['insert_target'] as $row) {
             if (isset($row['group_name'])
                 ||  isset($row['desc'])
                 ||  isset($row['disp_flag'])
-                ||  !empty($row['parent_id']))
-            {
+                ||  !empty($row['parent_id'])) {
                 $mapper->insertGroup(
                     $row['group_name'],
                     $row['desc'],
@@ -50,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $disp_group_record = ExampleGroupMapper::orderBy('parent_id', 'asc')->get();
-$example_array = array_map(function($record) {
+$example_array = array_map(function ($record) {
     return new ExampleGroup($record);
 }, $disp_group_record->toArray());
 
@@ -71,7 +70,7 @@ $disp_group = json_encode([
     <main>
       <div class="container p-3">
         <div class="row px-3">
-          <script id="disp-group-vue" data-json="<?= ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group) ?>"></script>
+          <script id="disp-group-vue" data-json="<?php echo ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group); ?>"></script>
           <form name="save-form" action="group_register.php" method="post">
             <section id="disp-group" v-cloak>
               <table  class="table table-sm table-bordered">
