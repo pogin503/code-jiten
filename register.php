@@ -21,7 +21,6 @@ $twig->addExtension(new Twig_Extension_Debug());
 echo $twig->load('header.html.twig')->render();
 
 $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;
-$parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_GET['group_cd'])) {
@@ -126,6 +125,8 @@ if (isset($group_cd)) {
     }
 
 } else {
+    $parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
+
     if (empty($parent_id)) {
         $disp_group = json_encode([
             'items' => ExampleGroupMapper::fetchLeaf()->toArray(),

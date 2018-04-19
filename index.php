@@ -11,8 +11,7 @@ $twig = new Twig_Environment($loader, array(
     'debug' => true,
 ));
 $twig->addExtension(new Twig_Extension_Debug());
-$template = $twig->load('header.html.twig');
-echo $template->render();
+echo $twig->load('header.html.twig')->render();
 
 $disp_group = json_encode([
     'items' => ExampleGroupMapper::fetchLeaf()->toArray(),
