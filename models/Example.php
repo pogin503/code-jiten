@@ -1,5 +1,6 @@
 <?php
-class Example {
+class Example
+{
     private $_example;
     private $_example_id;
     private $_language;

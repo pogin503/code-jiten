@@ -18,8 +18,7 @@ class Template extends Eloquent
     }
     public function updateTemplate(int $language_id, string $template)
     {
-        self::where('language_id', $language_id)->update([
-            'template' => $template
-        ]);
+        self::where('language_id', $language_id)
+            ->update(['template' => $template]);
     }
 }
