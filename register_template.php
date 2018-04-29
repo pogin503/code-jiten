@@ -15,10 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 $loader = new Twig_Loader_Filesystem('views');
-$twig = new Twig_Environment($loader, array(
-    //'cache' => './compilation_cache',
-    'debug' => true,
-));
+$twig = new Twig_Environment(
+    $loader, array(
+        //'cache' => './compilation_cache',
+        'debug' => true,
+    )
+);
 
 $twig->addExtension(new Twig_Extension_Debug());
 echo $twig->load('header.html.twig')->render();
@@ -54,12 +56,15 @@ $json = json_encode($template_array);
                 <tr v-for="(template, index) in templates" :key="template.language_id">
                   <td>
                     {{ template.language }}
-                    <input :name="'template[' + index + '][language_id]'" type="hidden" :value="template.language_id"/>
+                    <input :name="'template[' + index + '][language_id]'"
+                           type="hidden"
+                           :value="template.language_id"/>
                   </td>
                   <td>
                     <autosize-textarea class="form-control"
                                          :name="'template[' + index + '][template]'"
-                                         v-model="template.template"></autosize-textarea>
+                                         v-model="template.template">
+                    </autosize-textarea>
                   </td>
                   </tr>
               </tbody>
