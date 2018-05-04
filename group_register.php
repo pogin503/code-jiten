@@ -55,8 +55,7 @@ $disp_group_record = ExampleGroupMapper::orderBy('parent_id', 'asc')->get();
 $example_array = array_map(
     function ($record) {
         return new ExampleGroup($record);
-    },
-    $disp_group_record->toArray()
+    }, $disp_group_record->toArray()
 );
 
 $disp_group = json_encode(
@@ -68,8 +67,7 @@ $disp_group = json_encode(
                     'insert_flag' => false,
                     'parent_id' => -1,
                 ];
-            },
-            $example_array
+            }, $example_array
         ),
     ]
 );

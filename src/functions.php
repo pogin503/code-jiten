@@ -2,9 +2,9 @@
 
 /**
  * Escape function
- * 
+ *
  * @param string $str value
- * 
+ *
  * @return string
  */
 function h($str)
@@ -14,9 +14,9 @@ function h($str)
 
 /**
  * Pretty print
- * 
+ *
  * @param mixed $obj any object
- * 
+ *
  * @return void
  */
 function pp($obj)

@@ -18,8 +18,8 @@ echo $twig->load('header.html.twig')->render();
 
 $disp_group = json_encode(
     [
-    'items' => ExampleGroupMapper::fetchLeaf()->toArray(),
-    'seen' => true
+        'items' => ExampleGroupMapper::fetchLeaf()->toArray(),
+        'seen' => true
     ]
 );
 ?>
@@ -44,7 +44,7 @@ $disp_group = json_encode(
                     <td>
                         <a :href="'register.php?parent_id=' + item.parent_id">
                             {{ item.parent_name }}
-                        </a> / 
+                        </a> /
                         <a :href="'register.php?group_cd=' + item.group_cd">
                             {{ item.group_name }}
                         </a>

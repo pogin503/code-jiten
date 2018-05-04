@@ -19,7 +19,7 @@ class ExampleGroupMapper extends Eloquent
     {
         return DB::table('t_example_group AS eg1')
             ->select(
-                'eg1.group_cd', 'eg1.group_name', 
+                'eg1.group_cd', 'eg1.group_name',
                 'eg1.parent_id', 'eg2.group_name AS parent_name'
             )->join('t_example_group AS eg2', 'eg1.parent_id', '=', 'eg2.group_cd')
             ->where('eg1.disp_flag', '=', 1)
@@ -69,7 +69,7 @@ class ExampleGroupMapper extends Eloquent
     }
 
     public function updateGroup(
-        int $group_cd, string $group_name, string $desc, 
+        int $group_cd, string $group_name, string $desc,
         $disp_flag, int $parent_id
     ) {
         $group = DB::table($this->table)->where('group_cd', '=', $group_cd)->first();
@@ -117,7 +117,7 @@ class ExampleGroupMapper extends Eloquent
                 );
             // $this->insertGroup($group_cd, );
             $insert_stmt = DB::getPdo()->prepare(
-                'INSERT INTO t_example_relation (group_ancestor, 
+                'INSERT INTO t_example_relation (group_ancestor,
                     group_descendant, depth)
                 SELECT supertree.group_ancestor,
                     subtree.group_descendant,
