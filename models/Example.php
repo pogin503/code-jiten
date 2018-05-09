@@ -1,4 +1,7 @@
 <?php
+/**
+ * Example Data
+ */
 class Example
 {
     private $_example;
@@ -8,6 +11,11 @@ class Example
     private $_group_cd;
     private $_group_name;
 
+    /**
+     * Constructor
+     *
+     * @param array $source data
+     */
     public function __construct(array $source)
     {
         $this->_example_id = $source['example_id'];
@@ -18,11 +26,24 @@ class Example
         $this->_group_name = $source['group_name'];
     }
 
+    /**
+     * Summary
+     *
+     * @param string $name parameter name
+     *
+     * @return mixed return parameter value
+     */
     public function __get($name)
     {
         return $this->$name;
     }
 
+    /**
+     * Convert array
+     *
+     * @access public
+     * @return array return array example data
+     */
     public function toArray()
     {
         return [

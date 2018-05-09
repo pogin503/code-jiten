@@ -1,4 +1,12 @@
 <?php
+/**
+ * Example Group Class
+ *
+ * @category Class
+ * @package  MyPackage
+ * @author   pogin503 <pogin503@gmail.com>
+ *
+ */
 require 'ValueObject.php';
 
 class ExampleGroup extends ValueObject
