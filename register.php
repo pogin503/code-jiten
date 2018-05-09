@@ -131,17 +131,16 @@ if (isset($group_cd)) {
     if (empty($group_data)) {
         $group_data_json = json_encode(['group_names' => []]);
     } else {
+        $group_data_array = array_map(
+            function ($i) {
+                return [
+                    'group_cd' => $i->group_cd,
+                    'group_name' => $i->group_name
+                ];
+            }, $group_data
+        );
         $group_data_json = json_encode(
-            [
-                'group_names' => array_map(
-                    function ($i) {
-                        return [
-                            'group_cd' => $i->group_cd,
-                            'group_name' => $i->group_name
-                        ];
-                    }, $group_data
-                ),
-            ]
+            ['group_names' => $group_data_array]
         );
     }
 
@@ -203,10 +202,10 @@ if (isset($group_cd)) {
                 </table>
             </section>
             <form name="save-form"
-                  action="register.php?group_cd=<?= $group_cd; ?>" method="post">
+                  action="register.php?group_cd=<php? echo $group_cd; ?>" method="post">
                 <section id="app" v-cloak>
                 <h2>
-                    <a href="register.php?group_cd=<?= $group_cd; ?>">
+                    <a href="register.php?group_cd=<php? echo $group_cd; ?>">
                         {{ group_name }}
                     </a>
                 </h2>
