@@ -2,24 +2,15 @@
 <html>
     <head>
 <?php
-require_once './vendor/autoload.php';
+require_once './src/bootstrap.php';
+require_once './src/functions.php';
 require_once './models/Example.php';
 require_once './models/ExampleMapper.php';
 require_once './models/ExampleGroup.php';
 require_once './models/ExampleGroupMapper.php';
 require_once './models/Language.php';
-require_once './src/functions.php';
 require_once './config/database.php';
 
-$loader = new Twig_Loader_Filesystem('views');
-$twig = new Twig_Environment(
-    $loader, array(
-        //'cache' => './compilation_cache',
-        'debug' => true,
-    )
-);
-
-$twig->addExtension(new Twig_Extension_Debug());
 echo $twig->load('header.html.twig')->render();
 
 $group_cd = isset($_GET['group_cd']) ? $_GET['group_cd'] : null;

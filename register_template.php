@@ -1,9 +1,10 @@
 <!doctype html>
 <html>
 <?php
+require_once 'src/bootstrap.php';
+require_once 'src/functions.php';
 require_once 'models/Template.php';
 require_once 'models/Language.php';
-require_once 'src/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['template'])) {
@@ -14,15 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }
 }
-$loader = new Twig_Loader_Filesystem('views');
-$twig = new Twig_Environment(
-    $loader, array(
-        //'cache' => './compilation_cache',
-        'debug' => true,
-    )
-);
-
-$twig->addExtension(new Twig_Extension_Debug());
 echo $twig->load('header.html.twig')->render();
 
 $languages = (new Language())->all();

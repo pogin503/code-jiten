@@ -1,19 +1,10 @@
 <html>
   <head>
 <?php
-require_once './vendor/autoload.php';
+require_once './src/bootstrap.php';
 require_once './src/functions.php';
 require_once './models/ExampleGroupMapper.php';
 
-$loader = new Twig_Loader_Filesystem('views');
-$twig = new Twig_Environment(
-    $loader, array(
-        //'cache' => './compilation_cache',
-        'debug' => true,
-    )
-);
-
-$twig->addExtension(new Twig_Extension_Debug());
 echo $twig->load('header.html.twig')->render();
 
 $disp_group = json_encode(
