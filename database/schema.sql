@@ -160,12 +160,60 @@ CREATE TRIGGER trigger_set_timestamp
        FOR EACH ROW
        EXECUTE PROCEDURE public.set_update_time();
 
--- Table: public.t_syntax_highlight
+-- Table: public.t_language_extension
 
--- DROP TABLE public.t_syntax_highlight;
+-- DROP TABLE public.t_language_extension;
+
+DROP TABLE IF EXISTS "t_language_extension";
+DROP SEQUENCE IF EXISTS t_language_extension_id_seq;
+CREATE SEQUENCE t_language_extension_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1;
+
+CREATE TABLE "public"."t_language_extension" (
+       "id" integer DEFAULT nextval('t_language_extension_id_seq') NOT NULL,
+       "language_id" integer NOT NULL,
+       "extension" character varying(10) NOT NULL,
+       "default_extension" smallint DEFAULT '0',
+       CONSTRAINT "t_language_extension_pkey" PRIMARY KEY ("id"),
+       CONSTRAINT "t_language_extension_language_id_fkey" FOREIGN KEY (language_id) REFERENCES t_language(id) NOT DEFERRABLE
+) WITH (oids = false);
+
+-- Table: public.t_syntax_mode
+
+-- DROP TABLE public.t_syntax_mode;
 DROP TABLE IF EXISTS t_syntax_mode;
 CREATE TABLE t_syntax_mode(
        id serial PRIMARY KEY,
        mode_syntax character varying(40),
        mode character varying(16)
 );
+
+CREATE OR REPLACE FUNCTION insert_template()
+RETURNS "trigger" AS
+$BODY$
+declare
+begin
+  insert into t_language_template (
+    language_id,
+    template,
+    created_at,
+    updated_at
+  ) values (
+    NEW.id,
+    '',
+    now(),
+    now()
+  );
+  insert into t_language_extension (
+    language_id,
+    extension,
+    default_extension
+  ) values (
+    NEW.id,
+    '1',
+    0
+  );
+  return new;
+end;
+$BODY$
+LANGUAGE plpgsql VOLATILE;
+ALTER FUNCTION insert_template() OWNER TO postgres;
