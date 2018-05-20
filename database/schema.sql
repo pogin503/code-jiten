@@ -27,10 +27,7 @@ CREATE TABLE public.t_example (
        REFERENCES public.t_example_group (group_cd) MATCH SIMPLE
        ON UPDATE NO ACTION
        ON DELETE NO ACTION
-)
-WITH (
-     OIDS = FALSE
-)
+) WITH (OIDS = FALSE)
 TABLESPACE pg_default;
 
 ALTER TABLE public.t_example
@@ -51,10 +48,7 @@ CREATE TABLE public.t_example_group (
        disp_flag smallint NOT NULL DEFAULT 0,
        parent_id integer NOT NULL DEFAULT 0,
        CONSTRAINT t_example_group_pkey PRIMARY KEY (group_cd)
-)
-WITH (
-     OIDS = FALSE
-)
+) WITH (OIDS = FALSE)
 TABLESPACE pg_default;
 
 ALTER TABLE public.t_example_group
@@ -83,10 +77,7 @@ CREATE TABLE public.t_example_relation (
        REFERENCES public.t_example_group (group_cd) MATCH SIMPLE
        ON UPDATE NO ACTION
        ON DELETE NO ACTION
-)
-WITH (
-     OIDS = FALSE
-)
+) WITH (OIDS = FALSE)
 TABLESPACE pg_default;
 
 ALTER TABLE public.t_example_relation
@@ -102,10 +93,7 @@ CREATE TABLE public.t_language (
        processing_system character varying(50) COLLATE pg_catalog."default" NOT NULL,
        version character varying(14) COLLATE pg_catalog."default",
        CONSTRAINT t_language_pkey PRIMARY KEY (id)
-)
-WITH (
-     OIDS = FALSE
-)
+) WITH (OIDS = FALSE)
 TABLESPACE pg_default;
 
 ALTER TABLE public.t_language
@@ -138,10 +126,7 @@ CREATE TABLE public.t_language_extension (
        REFERENCES public.t_language (id) MATCH SIMPLE
        ON UPDATE NO ACTION
        ON DELETE NO ACTION
-)
-WITH (
-     OIDS = FALSE
-)
+) WITH (OIDS = FALSE)
 TABLESPACE pg_default;
 
 ALTER TABLE public.t_language_extension
@@ -162,10 +147,7 @@ CREATE TABLE public.t_language_template(
        REFERENCES public.t_language (id) MATCH SIMPLE
        ON UPDATE NO ACTION
        ON DELETE NO ACTION
-)
-WITH (
-     OIDS = FALSE
-)
+) WITH (OIDS = FALSE)
 TABLESPACE pg_default;
 
 -- Trigger: trigger_set_timestamp
