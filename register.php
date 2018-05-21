@@ -193,10 +193,10 @@ if (isset($group_cd)) {
                 </table>
             </section>
             <form name="save-form"
-                  action="register.php?group_cd=<php? echo $group_cd; ?>" method="post">
+                  action="register.php?group_cd=<?php echo $group_cd; ?>" method="post">
                 <section id="app" v-cloak>
                 <h2>
-                    <a href="register.php?group_cd=<php? echo $group_cd; ?>">
+                    <a href="register.php?group_cd=<?php echo $group_cd; ?>">
                         {{ group_name }}
                     </a>
                 </h2>
