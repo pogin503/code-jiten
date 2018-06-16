@@ -19,4 +19,7 @@ echo "DROP DATABASE IF EXISTS $DBNAME;" | psql --username="$USERNAME" -h "$HOST"
 echo "CREATE DATABASE $DBNAME with encoding = 'UTF8';" | psql --username="$USERNAME" -h "$HOST" -p "$PORT" template1
 
 psql --username="$USERNAME" -h "$HOST" -p "$PORT" "$DBNAME" --single-transaction < "${RESTORE_DIR}/${SCHEMA}.sql"
+
+psql --username="$USERNAME" -h "$HOST" -p "$PORT" "$DBNAME" --single-transaction < "${RESTORE_DIR}/${FUNCTION}.sql"
+
 psql --username="$USERNAME" -h "$HOST" -p "$PORT" "$DBNAME" --single-transaction < "${RESTORE_DIR}/${DATA}.sql"

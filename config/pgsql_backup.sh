@@ -30,3 +30,12 @@ pg_dump --username="$USERNAME" -h "$HOST" -p "$PORT" --schema-only "$DBNAME" --i
 # shellcheck disable=SC2086
 pg_dump --username="$USERNAME" -h "$HOST" -p "$PORT" --data-only --disable-triggers "$DBNAME" "-F${FORMAT}" ${TABLES_WITH_OPT} \
 		    > "$BACKUP_DIR/${DATE_DIR}/${DATA}.sql"
+
+
+psql --username="$USERNAME" -h "$HOST" -p "$PORT" -At "$DBNAME" \
+     > "$BACKUP_DIR/${DATE_DIR}/${FUNCTION}.sql" << "__END__"
+SELECT pg_get_functiondef(f.oid)
+FROM pg_catalog.pg_proc f
+INNER JOIN pg_catalog.pg_namespace n ON (f.pronamespace = n.oid)
+WHERE n.nspname = 'public';
+__END__
