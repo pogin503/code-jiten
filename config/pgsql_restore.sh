@@ -3,7 +3,7 @@
 set -eu
 # set -x
 
-cd $(dirname "$0")
+cd "$(dirname "$0")"
 
 # shellcheck source=env.sh
 . env.sh
