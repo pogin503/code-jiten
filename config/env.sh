@@ -15,7 +15,9 @@ PORT=5432
 SCHEMA=1_mydb.schema
 DATA=2_mydb.data
 FUNCTION=3_mydb.function
-FORMAT=c
+# p: plain
+# c: custom format
+FORMAT=p
 EXTRA=
 
 BACKUP_DIR=~/var/lib/postgresql/10/dump
