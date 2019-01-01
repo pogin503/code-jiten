@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="1">
+    <title>Simba Spark ODBC Driver</title>
+	<pkg-ref id="com.simba.sparkodbc"/>
+    <options customize="never" require-scripts="false"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.simba.sparkodbc"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="com.simba.sparkodbc" visible="false">
+        <pkg-ref id="com.simba.sparkodbc"/>
+    </choice>
+    <license file="EULA.rtf" mime-type="text/rtf"/>
+    <welcome file="SimbaSparkODBC-Welcome.rtf" mime-type="text/rtf"/>
+    <pkg-ref id="com.simba.sparkodbc" version="1.0.9" onConclusion="none">pkgbuild.pkg</pkg-ref>
+</installer-gui-script>
