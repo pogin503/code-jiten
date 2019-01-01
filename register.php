@@ -91,7 +91,6 @@ if (isset($group_cd)) {
             ]
         );
     } else {
-
         $items = array_map(
             function ($i, $idx) {
                 return [
@@ -100,7 +99,9 @@ if (isset($group_cd)) {
                     'update_flag' => false,
                     'row_num' => $idx
                 ];
-            }, $examples, range(1, count($examples))
+            },
+            $examples,
+            range(1, count($examples))
         );
 
         $json = json_encode(
@@ -116,7 +117,8 @@ if (isset($group_cd)) {
     $group_data = array_map(
         function ($i) {
             return new ExampleGroup($i);
-        }, ExampleGroupMapper::fetchParents($group_cd)
+        },
+        ExampleGroupMapper::fetchParents($group_cd)
     );
 
     if (empty($group_data)) {
@@ -128,7 +130,8 @@ if (isset($group_cd)) {
                     'group_cd' => $i->group_cd,
                     'group_name' => $i->group_name
                 ];
-            }, $group_data
+            },
+            $group_data
         );
         $group_data_json = json_encode(
             ['group_names' => $group_data_array]

@@ -7,10 +7,8 @@ define('DB_CHARSET', 'UTF8');
 define('DB_USERNAME', 'postgres');
 define('DB_PASSWD', 'postgres');
 define(
-    'PDO_DSN', DB_DRIVER . ":host=" . DB_HOST
-    . ";dbname=" . DB_DATABASE
-    . ";port=" . DB_PORT
-    . "charset=" . DB_CHARSET
+    'PDO_DSN',
+    DB_DRIVER . ":host=" . DB_HOST . ";dbname=" . DB_DATABASE . ";port=" . DB_PORT
 );
 
 use Illuminate\Database\Capsule\Manager as Capsule;
