@@ -1,7 +1,6 @@
 # config/database.php
 # config/env.sh
-
-### https://raw.github.com/github/gitignore/1a9f616ce525987555d43c72d59eb830d1856bd7/Node.gitignore
+### https://raw.github.com/github/gitignore/9931a0607752664877a66bb220f11aa285dc1047/Node.gitignore
 
 # Logs
 logs
@@ -41,7 +40,7 @@ build/Release
 node_modules/
 jspm_packages/
 
-# Typescript v1 declaration files
+# TypeScript v1 declaration files
 typings/
 
 # Optional npm cache directory
@@ -62,7 +61,23 @@ typings/
 # dotenv environment variables file
 .env
 
-### https://raw.github.com/github/gitignore/1a9f616ce525987555d43c72d59eb830d1856bd7/Composer.gitignore
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+
+### https://raw.github.com/github/gitignore/9931a0607752664877a66bb220f11aa285dc1047/Composer.gitignore
 
 composer.phar
 /vendor/
@@ -70,7 +85,9 @@ composer.phar
 # Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
 # composer.lock
-### https://raw.github.com/github/gitignore/1a9f616ce525987555d43c72d59eb830d1856bd7/Laravel.gitignore
+
+
+### https://raw.github.com/github/gitignore/9931a0607752664877a66bb220f11aa285dc1047/Laravel.gitignore
 
 vendor/
 node_modules/
@@ -94,20 +111,3 @@ Homestead.json
 .rocketeer/
 
 
-.DS_Store
-node_modules/
-/dist/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-/test/unit/coverage/
-/test/e2e/reports/
-selenium-debug.log
-
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln

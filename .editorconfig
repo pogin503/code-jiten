@@ -13,8 +13,8 @@ trim_trailing_whitespace = true
 [*.json]
 indent_size = 2
 
-[*.js,*.php,*.vue]
+[*.{js,php,vue,sql}]
 indent_size = 4
 
-[*.html,*.htm,*.css]
+[*.{html,htm,css}]
 indent_size = 4
