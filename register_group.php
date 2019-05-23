@@ -73,7 +73,7 @@ $disp_group = json_encode(
             <script id="disp-group-vue"
                     data-json="<?php echo ($disp_group == '') ? '{&quot;items&quot;: null}' : h($disp_group); ?>">
             </script>
-            <form name="save-form" action="group_register.php" method="post">
+            <form name="save-form" action="register_group.php" method="post">
                 <section id="disp-group" v-cloak>
                 <table  class="table table-sm table-bordered">
                     <thead>
