@@ -1,6 +1,8 @@
 code-jiten
 ============
 
+[![Join the chat at https://gitter.im/code-jiten/Lobby](https://badges.gitter.im/code-jiten/Lobby.svg)](https://gitter.im/code-jiten/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 # Features
 - 横断的に各言語の実行例を参照できる
 - 言語ごとの処理の比較ができる。
